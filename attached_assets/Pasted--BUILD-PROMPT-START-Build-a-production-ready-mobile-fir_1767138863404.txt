@@ -1,0 +1,136 @@
+🔧 BUILD PROMPT START
+Build a production-ready, mobile-first web application named “AI Rep Counter Pro”.
+This app must function like a real consumer fitness product, not a demo.
+CORE REQUIREMENTS (NON-NEGOTIABLE)
+Use the phone’s FRONT camera
+Run 100% on-device (no backend, no cloud inference)
+Use MediaPipe Pose (Web / WASM)
+Real-time pose tracking with skeleton overlay
+Automatic rep counting using joint angles, distances, and state machines
+Optimized for iOS Safari and Android Chrome
+Zero server calls after load
+Zero user data storage
+TECH STACK (DO NOT DEVIATE)
+HTML
+CSS
+Vanilla JavaScript
+MediaPipe Pose
+Canvas API
+getUserMedia
+❌ No React
+❌ No TensorFlow.js training
+❌ No backend
+❌ No databases
+REQUIRED FILE STRUCTURE
+index.html
+style.css
+app.js
+The app must run immediately when pressing Run in Replit.
+UI / UX REQUIREMENTS
+Fullscreen mobile-first layout
+Live mirrored front-camera video
+Canvas skeleton overlay aligned perfectly to video
+Exercise selector dropdown
+Rep counter
+Movement state indicator (UP / DOWN / HOLD / REP ✔)
+Dark mode styling
+Auto camera start after user interaction
+Graceful camera permission handling
+POSE TRACKING CONFIGURATION
+Enable smooth landmarks
+minDetectionConfidence ≥ 0.6
+minTrackingConfidence ≥ 0.6
+Draw:
+Joint points
+Bone connections
+Auto-resize canvas to match video resolution
+CORE ENGINE REQUIREMENTS
+Implement a modular exercise engine with:
+A single pose stream
+An exercise logic map
+A reusable angle calculation utility
+Per-exercise state machines
+Double-count prevention
+Clean, commented, readable code
+🏋️‍♂️ REQUIRED EXERCISES (ALL 16 MUST WORK)
+Each exercise must use correct landmarks, real movement logic, and rep validation.
+1. Push-up
+Landmarks: shoulder (11), elbow (13), wrist (15)
+Down: elbow angle < 90°
+Up: elbow angle > 160°
+Rep: DOWN → UP
+2. Plank Up-Down
+Same landmarks as push-up
+Count only full arm extension cycles
+3. Pike Push-up
+Shoulder-hip angle + elbow bend
+Down: elbow < 90°
+Up: elbow > 160°
+4. Shoulder Tap
+Detect wrist proximity to opposite shoulder
+Count 1 rep per left + right tap
+5. Lunge
+Hip (23), knee (25), ankle (27)
+Down: knee angle < 90°
+Up: knee angle > 160°
+Alternate legs
+6. Glute Bridge
+Shoulder (11), hip (23), knee (25)
+Up: hip angle > 160°
+Down: < 120°
+7. Calf Raise
+Hip (23), ankle (27)
+Detect vertical ankle rise and controlled lower
+8. Plank (Static Hold)
+Detect straight body alignment
+Track time held, not reps
+9. High Knees
+Knee passes hip vertically
+Alternate legs
+Count per knee lift
+10. Burpees
+Detect full sequence:
+Standing
+Squat
+Plank
+Jump
+Count 1 rep per full cycle only
+11. Mountain Climbers
+Knee-to-chest proximity
+Alternate legs
+Count per drive
+12. Jumping Jacks
+Wrist + ankle lateral spread
+Closed → Open → Closed = 1 rep
+13. Leg Raises
+Hip (23), knee (25)
+Up: leg angle < 45°
+Down: > 90°
+14. Russian Twists
+Shoulder rotation left ↔ right
+Count full left + right cycle
+15. Crunches
+Shoulder-to-hip distance reduction
+Rep on contraction → release
+16. Squats
+Hip (23), knee (25), ankle (27)
+Down: knee angle < 90°
+Up: > 160°
+PERFORMANCE & MOBILE SAFETY
+Use playsinline
+Mirror video horizontally
+Reduce model complexity on low-end devices
+Stable frame rate
+No jitter counting
+QUALITY BAR (CRITICAL)
+This must behave like a real fitness app:
+Accurate reps
+No false positives
+No placeholder logic
+Stable, smooth experience
+DEPLOYMENT
+No environment variables
+No setup steps
+Runs immediately on Replit
+Suitable for PWA extension later
+🔧 BUILD PROMPT END
