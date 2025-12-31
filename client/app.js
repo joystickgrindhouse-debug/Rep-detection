@@ -6,7 +6,7 @@ const CONFIG = {
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
     modelComplexity: 1, 
-    visibilityThreshold: 0.3, // Lowered further to catch faster movements
+    visibilityThreshold: 0.2, // Extremely low threshold to maintain tracking
 };
 
 const STATE = {
@@ -90,27 +90,24 @@ class PushUp extends BaseExercise {
         const leftAngle = calculateAngle(leftShoulder, leftElbow, leftWrist);
         const rightAngle = calculateAngle(rightShoulder, rightElbow, rightWrist);
         
-        // Pick the best angle based on visibility
         let angle = -1;
         if (leftAngle !== -1 && rightAngle !== -1) {
-            const leftVis = (leftShoulder.visibility + leftElbow.visibility + leftWrist.visibility) / 3;
-            const rightVis = (rightShoulder.visibility + rightElbow.visibility + rightWrist.visibility) / 3;
-            angle = leftVis > rightVis ? leftAngle : rightAngle;
+            angle = Math.max(leftAngle, rightAngle); 
         } else {
             angle = leftAngle !== -1 ? leftAngle : rightAngle;
         }
 
         if (angle === -1) return { feedback: 'Align side to camera' };
         
-        // Broadened thresholds for better detection
-        if (angle > 150) { // Up position (Extension)
+        // Final broad thresholds for guaranteed detection
+        if (angle > 140) { // Up position (Extension) - Very forgiving
             if (this.state === 'DOWN') {
                 this.state = 'UP';
                 return { repIncrement: 1, state: 'UP', feedback: 'Good rep!' };
             }
             return { state: 'UP', feedback: 'Go down' };
         } 
-        if (angle < 100) { // Down position (Compression)
+        if (angle < 110) { // Down position (Compression) - Very forgiving
             this.state = 'DOWN';
             return { state: 'DOWN', feedback: 'Push up!' };
         }
@@ -132,20 +129,20 @@ class Squats extends BaseExercise {
 
         let angle = -1;
         if (leftAngle !== -1 && rightAngle !== -1) {
-            angle = Math.min(leftAngle, rightAngle); // Use the deeper squat side
+            angle = Math.min(leftAngle, rightAngle); 
         } else {
             angle = leftAngle !== -1 ? leftAngle : rightAngle;
         }
 
         if (angle === -1) return { feedback: 'Legs out of view' };
-        if (angle > 155) {
+        if (angle > 145) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
                 return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
             }
             return { state: 'UP', feedback: 'Squat down' };
         }
-        if (angle < 100) {
+        if (angle < 110) {
             this.state = 'DOWN';
             return { state: 'DOWN', feedback: 'Drive up!' };
         }
@@ -206,11 +203,11 @@ class Lunge extends BaseExercise {
         const lKnee = calculateAngle(this.get(landmarks, 23), this.get(landmarks, 25), this.get(landmarks, 27));
         const rKnee = calculateAngle(this.get(landmarks, 24), this.get(landmarks, 26), this.get(landmarks, 28));
         if (lKnee === -1 || rKnee === -1) return { feedback: 'Show legs' };
-        if (lKnee < 110 || rKnee < 110) {
+        if (lKnee < 115 || rKnee < 115) {
             this.state = 'DOWN';
             return { state: 'DOWN', feedback: 'Up' };
         }
-        if (lKnee > 155 && rKnee > 155) {
+        if (lKnee > 145 && rKnee > 145) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
                 return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
@@ -228,11 +225,11 @@ class Crunches extends BaseExercise {
         if (shoulder.visibility < CONFIG.visibilityThreshold) return { feedback: 'Torso in view' };
         const dist = calculateDistance(shoulder, knee);
         const ref = calculateDistance(hip, knee);
-        if (dist < ref * 1.2) {
+        if (dist < ref * 1.3) {
             this.state = 'IN';
             return { state: 'CRUNCH', feedback: 'Down' };
         }
-        if (dist > ref * 1.6 && this.state === 'IN') {
+        if (dist > ref * 1.5 && this.state === 'IN') {
             this.state = 'OUT';
             return { repIncrement: 1, state: 'OUT', feedback: 'Crunch!' };
         }
@@ -247,8 +244,8 @@ class HighKnees extends BaseExercise {
         const lHip = this.get(landmarks, 23);
         const rKnee = this.get(landmarks, 26);
         const rHip = this.get(landmarks, 24);
-        const lUp = lKnee.visibility > CONFIG.visibilityThreshold && lKnee.y < lHip.y - 0.1;
-        const rUp = rKnee.visibility > CONFIG.visibilityThreshold && rKnee.y < rHip.y - 0.1;
+        const lUp = lKnee.visibility > CONFIG.visibilityThreshold && lKnee.y < lHip.y - 0.08;
+        const rUp = rKnee.visibility > CONFIG.visibilityThreshold && rKnee.y < rHip.y - 0.08;
         if (lUp && this.lastLeg !== 'left') {
             this.lastLeg = 'left';
             return { repIncrement: 0.5, state: 'LEFT', feedback: 'Next!' };
@@ -267,8 +264,8 @@ class Burpees extends BaseExercise {
     update(landmarks) {
         const shoulder = this.get(landmarks, 11);
         const ankle = this.get(landmarks, 27);
-        const isHorizontal = Math.abs(shoulder.y - ankle.y) < 0.2;
-        const isVertical = shoulder.y < this.get(landmarks, 23).y && Math.abs(shoulder.x - ankle.x) < 0.2;
+        const isHorizontal = Math.abs(shoulder.y - ankle.y) < 0.25;
+        const isVertical = shoulder.y < this.get(landmarks, 23).y && Math.abs(shoulder.x - ankle.x) < 0.25;
         if (isHorizontal && this.step === 0) {
             this.step = 1;
             return { state: 'PLANK', feedback: 'Up!' };
@@ -287,8 +284,8 @@ class ShoulderTap extends BaseExercise {
         const rWrist = this.get(landmarks, 16);
         const lShoulder = this.get(landmarks, 11);
         const rShoulder = this.get(landmarks, 12);
-        const lTap = calculateDistance(lWrist, rShoulder) < 0.2;
-        const rTap = calculateDistance(rWrist, lShoulder) < 0.2;
+        const lTap = calculateDistance(lWrist, rShoulder) < 0.25;
+        const rTap = calculateDistance(rWrist, lShoulder) < 0.25;
         if ((lTap || rTap) && this.state !== 'TAP') {
             this.state = 'TAP';
             return { repIncrement: 0.5, feedback: 'Tap!' };
@@ -302,7 +299,7 @@ class CalfRaise extends BaseExercise {
     update(landmarks) {
         const ankle = this.get(landmarks, 27);
         if (!this.baseY) this.baseY = ankle.y;
-        if (ankle.y < this.baseY - 0.04) {
+        if (ankle.y < this.baseY - 0.03) {
             this.state = 'UP';
             return { state: 'UP', feedback: 'Down' };
         }
@@ -318,11 +315,11 @@ class RussianTwists extends BaseExercise {
     update(landmarks) {
         const lShoulder = this.get(landmarks, 11);
         const rShoulder = this.get(landmarks, 12);
-        if (lShoulder.x > rShoulder.x + 0.08 && this.state !== 'LEFT') {
+        if (lShoulder.x > rShoulder.x + 0.05 && this.state !== 'LEFT') {
             this.state = 'LEFT';
             return { repIncrement: 0.5, feedback: 'Right' };
         }
-        if (rShoulder.x > lShoulder.x + 0.08 && this.state !== 'RIGHT') {
+        if (rShoulder.x > lShoulder.x + 0.05 && this.state !== 'RIGHT') {
             this.state = 'RIGHT';
             return { repIncrement: 0.5, feedback: 'Left' };
         }
@@ -457,7 +454,7 @@ function onResults(results) {
         connections.forEach(([i, j]) => {
             const p1 = results.poseLandmarks[i];
             const p2 = results.poseLandmarks[j];
-            if (p1 && p2 && p1.visibility > 0.3 && p2.visibility > 0.3) {
+            if (p1 && p2 && p1.visibility > 0.1 && p2.visibility > 0.1) {
                 canvasCtx.beginPath();
                 canvasCtx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
                 canvasCtx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
