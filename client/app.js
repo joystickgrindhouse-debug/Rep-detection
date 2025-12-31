@@ -107,8 +107,10 @@ function showToast(message) {
 function updateSoloUI() {
     if (!STATE.isSoloMode) return;
     
-    totalRepsDisplay.innerText = STATE.totalReps;
-    diceDisplay.innerText = Math.floor(STATE.totalReps / 30);
+    // Show session total (completed cards) + current card reps
+    const runningTotal = STATE.totalReps + Math.floor(STATE.reps);
+    totalRepsDisplay.innerText = runningTotal;
+    diceDisplay.innerText = Math.floor(runningTotal / 30);
     
     const progress = (STATE.reps / STATE.currentCard.target) * 100;
     cardProgress.style.width = `${Math.min(progress, 100)}%`;
@@ -116,7 +118,7 @@ function updateSoloUI() {
     if (STATE.reps >= STATE.currentCard.target) {
         showToast("TARGET REACHED! 💪");
         speak("Target reached");
-        STATE.totalReps += STATE.reps;
+        STATE.totalReps += Math.floor(STATE.reps);
         setTimeout(drawNewCard, 1500);
     }
 }
