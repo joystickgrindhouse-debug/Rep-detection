@@ -429,8 +429,20 @@ function onResults(results) {
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
     if (results.poseLandmarks) {
-        drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {color: '#00FF88', lineWidth: 4});
-        drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#FF4444', lineWidth: 2});
+        // Full Skeleton Overlay with Correct Form Colors
+        // Connections in Neon Green
+        drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {
+            color: '#00FF88', 
+            lineWidth: 5 
+        });
+        
+        // Landmarks in Bright Red
+        drawLandmarks(canvasCtx, results.poseLandmarks, {
+            color: '#FF4444', 
+            lineWidth: 2,
+            radius: 4
+        });
+
         engine.process(results.poseLandmarks);
     }
     
