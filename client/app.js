@@ -9,6 +9,7 @@ const CONFIG = {
     minDetectionConfidence: 0.6,
     minTrackingConfidence: 0.6,
     modelComplexity: 1,
+    visibilityThreshold: 0.6, // Landmarks must be visible to be considered valid
 };
 
 const STATE = {
@@ -17,7 +18,7 @@ const STATE = {
     reps: 0,
     movementState: 'IDLE', // UP, DOWN, HOLD
     lastFeedback: 'Get Ready',
-    startTime: null, // For timed exercises
+    startTime: null, 
     landmarks: null,
 };
 
@@ -40,7 +41,14 @@ const cameraStatus = document.getElementById('camera-status');
 // ==========================================
 function calculateAngle(a, b, c) {
     // Calculates angle at point b (a-b-c)
-    if (!a || !b || !c) return 0;
+    if (!a || !b || !c) return -1;
+    
+    // Joint visibility check to prevent "waving" or noise from triggering reps
+    if (a.visibility < CONFIG.visibilityThreshold || 
+        b.visibility < CONFIG.visibilityThreshold || 
+        c.visibility < CONFIG.visibilityThreshold) {
+        return -1; 
+    }
     
     const radians = Math.atan2(c.y - b.y, c.x - b.x) - Math.atan2(a.y - b.y, a.x - b.x);
     let angle = Math.abs(radians * 180.0 / Math.PI);
@@ -61,18 +69,18 @@ class ExerciseEngine {
     constructor() {
         this.exercises = {
             pushup: new PushUp(),
-            plankupdown: new PlankUpDown(),
-            pikepushup: new PikePushUp(),
+            plankupdown: new PushUp(), // Reuse logic for now
+            pikepushup: new PushUp(),
             shouldertap: new ShoulderTap(),
             lunge: new Lunge(),
-            glutebridge: new GluteBridge(),
+            glutebridge: new Squats(), // Similar angle logic
             calfraise: new CalfRaise(),
             plank: new Plank(),
             highknees: new HighKnees(),
             burpees: new Burpees(),
-            mountainclimbers: new MountainClimbers(),
+            mountainclimbers: new HighKnees(),
             jumpingjacks: new JumpingJacks(),
-            legraises: new LegRaises(),
+            legraises: new Crunches(),
             russiantwists: new RussianTwists(),
             crunches: new Crunches(),
             squats: new Squats(),
@@ -103,8 +111,6 @@ class ExerciseEngine {
         STATE.lastFeedback = 'Get Ready';
         updateUI();
         updateFeedbackUI();
-        
-        // Reset all individual exercise states
         Object.values(this.exercises).forEach(ex => ex.reset());
     }
 }
@@ -114,14 +120,13 @@ class ExerciseEngine {
 // ==========================================
 class BaseExercise {
     constructor() {
-        this.state = 'UP'; // Default starting state
+        this.state = 'UP';
         this.reset();
     }
     reset() {
         this.state = 'UP';
         this.counter = 0;
     }
-    // Helper to get coordinates
     get(landmarks, index) {
         return landmarks[index];
     }
@@ -133,8 +138,8 @@ class PushUp extends BaseExercise {
         const leftElbow = this.get(landmarks, 13);
         const leftWrist = this.get(landmarks, 15);
         
-        // Use left side primarily, maybe average with right for robustness
         const angle = calculateAngle(leftShoulder, leftElbow, leftWrist);
+        if (angle === -1) return { feedback: 'Align side to camera' };
         
         if (angle > 160) {
             if (this.state === 'DOWN') {
@@ -149,7 +154,7 @@ class PushUp extends BaseExercise {
             return { state: 'DOWN', feedback: 'Push up!' };
         }
         
-        return { state: this.state, feedback: 'Hold form' };
+        return { state: this.state, feedback: 'Keep going' };
     }
 }
 
@@ -160,11 +165,12 @@ class Squats extends BaseExercise {
         const ankle = this.get(landmarks, 27);
         
         const angle = calculateAngle(hip, knee, ankle);
+        if (angle === -1) return { feedback: 'Legs out of view' };
         
         if (angle > 160) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
-                return { repIncrement: 1, state: 'UP', feedback: 'Good squat!' };
+                return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
             }
             return { state: 'UP', feedback: 'Squat down' };
         }
@@ -174,38 +180,29 @@ class Squats extends BaseExercise {
             return { state: 'DOWN', feedback: 'Drive up!' };
         }
         
-        return { state: this.state, feedback: 'Keep chest up' };
+        return { state: this.state, feedback: 'Lower' };
     }
 }
 
 class Plank extends BaseExercise {
-    constructor() {
-        super();
-        this.startTime = null;
-    }
-    reset() {
-        this.startTime = null;
-    }
+    constructor() { super(); this.startTime = null; }
+    reset() { this.startTime = null; }
     update(landmarks) {
-        // Simple logic: Check if body is horizontal
         const shoulder = this.get(landmarks, 11);
         const hip = this.get(landmarks, 23);
         const ankle = this.get(landmarks, 27);
-        
-        // Angle at hip should be ~180 (straight body)
         const hipAngle = calculateAngle(shoulder, hip, ankle);
         
-        // Should be horizontal-ish? 
-        // For simplicity, we just assume if they are in frame and hip is straight
+        if (hipAngle === -1) return { feedback: 'Body out of view' };
         
-        if (hipAngle > 160) {
+        if (hipAngle > 165) {
             if (!this.startTime) this.startTime = Date.now();
             const seconds = Math.floor((Date.now() - this.startTime) / 1000);
-            STATE.reps = seconds; // Hack: using reps display for seconds
+            STATE.reps = seconds;
             return { state: 'HOLD', feedback: 'Hold it!' };
         } else {
-            this.startTime = null; // Reset if form breaks
-            return { state: 'BAD FORM', feedback: 'Straighten back' };
+            this.startTime = null;
+            return { state: 'FORM', feedback: 'Lower hips' };
         }
     }
 }
@@ -214,87 +211,74 @@ class JumpingJacks extends BaseExercise {
     update(landmarks) {
         const leftHand = this.get(landmarks, 15);
         const rightHand = this.get(landmarks, 16);
-        const leftHip = this.get(landmarks, 23);
-        
-        // Y-coordinate: 0 is top, 1 is bottom
-        // Hands above head logic
-        
-        // Hands are above head if y < nose y? Or just logic based on hips
-        // Open state: Hands high, legs wide (not tracking legs width easily without aspect ratio)
-        // Let's use hand height relative to head
-        
-        // Simple state machine: Hands DOWN -> Hands UP -> Hands DOWN = 1 rep
-        
-        const handsUp = leftHand.y < this.get(landmarks, 0).y && rightHand.y < this.get(landmarks, 0).y;
-        const handsDown = leftHand.y > leftHip.y && rightHand.y > leftHip.y;
-        
-        if (handsUp) {
-            this.state = 'UP';
-            return { state: 'UP', feedback: 'Hands down!' };
+        const leftAnkle = this.get(landmarks, 27);
+        const rightAnkle = this.get(landmarks, 28);
+        const nose = this.get(landmarks, 0);
+
+        if (leftHand.visibility < CONFIG.visibilityThreshold || rightHand.visibility < CONFIG.visibilityThreshold) {
+            return { feedback: 'Hands in view' };
         }
         
-        if (handsDown) {
+        const handsUp = leftHand.y < nose.y && rightHand.y < nose.y;
+        const feetWide = calculateDistance(leftAnkle, rightAnkle) > 0.4; // Normalized distance
+        
+        if (handsUp && feetWide) {
+            this.state = 'UP';
+            return { state: 'OPEN', feedback: 'Back in' };
+        }
+        
+        if (!handsUp && !feetWide) {
             if (this.state === 'UP') {
                 this.state = 'DOWN';
-                return { repIncrement: 1, state: 'DOWN', feedback: 'Good!' };
+                return { repIncrement: 1, state: 'CLOSED', feedback: 'Nice!' };
             }
-            return { state: 'DOWN', feedback: 'Jump up!' };
+            return { state: 'DOWN', feedback: 'Jump!' };
         }
-        
-        return { state: this.state, feedback: 'Keep going' };
+        return { state: this.state, feedback: 'Keep jumping' };
     }
 }
 
-// Placeholder classes for other exercises to ensure app runs
-// Logic implemented for key ones above.
-// Implementing simple versions for others to meet "ALL 16 MUST WORK" requirement
 class Lunge extends BaseExercise {
     update(landmarks) {
-        const lKneeAngle = calculateAngle(this.get(landmarks, 23), this.get(landmarks, 25), this.get(landmarks, 27));
-        const rKneeAngle = calculateAngle(this.get(landmarks, 24), this.get(landmarks, 26), this.get(landmarks, 28));
+        const lKnee = calculateAngle(this.get(landmarks, 23), this.get(landmarks, 25), this.get(landmarks, 27));
+        const rKnee = calculateAngle(this.get(landmarks, 24), this.get(landmarks, 26), this.get(landmarks, 28));
         
-        // Check either leg
-        const deepLunge = lKneeAngle < 90 || rKneeAngle < 90;
-        const standing = lKneeAngle > 160 && rKneeAngle > 160;
+        if (lKnee === -1 || rKnee === -1) return { feedback: 'Show legs' };
         
-        if (deepLunge) {
+        if (lKnee < 100 || rKnee < 100) {
             this.state = 'DOWN';
-            return { state: 'DOWN', feedback: 'Step back up' };
+            return { state: 'DOWN', feedback: 'Up' };
         }
-        if (standing) {
+        if (lKnee > 160 && rKnee > 160) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
-                return { repIncrement: 1, state: 'UP', feedback: 'Nice lunge!' };
+                return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
             }
         }
-        return { state: this.state, feedback: 'Lunge deep' };
+        return { state: this.state, feedback: 'Lunge' };
     }
 }
 
 class Crunches extends BaseExercise {
     update(landmarks) {
-        // Shoulder to knee distance? Or just shoulder curl
-        // Use shoulder-hip distance relative to trunk height, or just y position?
-        // Let's use knee-shoulder distance
         const shoulder = this.get(landmarks, 11);
         const knee = this.get(landmarks, 25);
+        const hip = this.get(landmarks, 23);
+        
+        if (shoulder.visibility < CONFIG.visibilityThreshold) return { feedback: 'Torso in view' };
+        
         const dist = calculateDistance(shoulder, knee);
+        const ref = calculateDistance(hip, knee);
         
-        // Need normalization. Let's use hip-knee length as reference unit
-        const legLen = calculateDistance(this.get(landmarks, 23), this.get(landmarks, 25));
-        
-        if (dist < legLen * 1.2) { // Close together
+        if (dist < ref * 1.1) {
             this.state = 'IN';
-            return { state: 'CRUNCH', feedback: 'Release' };
+            return { state: 'CRUNCH', feedback: 'Down' };
         }
-        
-        if (dist > legLen * 1.8) { // Far apart
-            if (this.state === 'IN') {
-                this.state = 'OUT';
-                return { repIncrement: 1, state: 'RELEASE', feedback: 'Crunch!' };
-            }
+        if (dist > ref * 1.7 && this.state === 'IN') {
+            this.state = 'OUT';
+            return { repIncrement: 1, state: 'OUT', feedback: 'Crunch!' };
         }
-        return { state: this.state, feedback: 'Crunch abs' };
+        return { state: this.state, feedback: 'Crunch' };
     }
 }
 
@@ -306,81 +290,100 @@ class HighKnees extends BaseExercise {
         const rKnee = this.get(landmarks, 26);
         const rHip = this.get(landmarks, 24);
         
-        // Knee higher than hip (y is smaller)
-        const lUp = lKnee.y < lHip.y;
-        const rUp = rKnee.y < rHip.y;
+        const lUp = lKnee.visibility > CONFIG.visibilityThreshold && lKnee.y < lHip.y - 0.1;
+        const rUp = rKnee.visibility > CONFIG.visibilityThreshold && rKnee.y < rHip.y - 0.1;
         
         if (lUp && this.lastLeg !== 'left') {
             this.lastLeg = 'left';
-            return { repIncrement: 1, state: 'LEFT', feedback: 'Right knee!' };
+            return { repIncrement: 0.5, state: 'LEFT', feedback: 'Next!' };
         }
         if (rUp && this.lastLeg !== 'right') {
             this.lastLeg = 'right';
-            return { repIncrement: 1, state: 'RIGHT', feedback: 'Left knee!' };
+            return { repIncrement: 0.5, state: 'RIGHT', feedback: 'Next!' };
         }
-        return { state: 'RUN', feedback: 'Knees up!' };
+        return { state: 'RUN', feedback: 'Knees high' };
     }
 }
 
 class Burpees extends BaseExercise {
-    // Complex state machine: STAND -> CROUCH -> PLANK -> CROUCH -> STAND -> JUMP
-    // Simplified: STAND -> PLANK -> STAND = 1 rep
+    constructor() { super(); this.step = 0; }
+    reset() { this.step = 0; }
     update(landmarks) {
         const shoulder = this.get(landmarks, 11);
-        const hip = this.get(landmarks, 23);
         const ankle = this.get(landmarks, 27);
-        
-        // Vertical check
-        const isVertical = Math.abs(shoulder.x - ankle.x) < 0.15;
-        // Horizontal check (plank)
-        const isHorizontal = Math.abs(shoulder.y - ankle.y) < 0.15;
-        
-        if (isHorizontal) {
-            this.state = 'PLANK';
-            return { state: 'PLANK', feedback: 'Jump up!' };
+        const isHorizontal = Math.abs(shoulder.y - ankle.y) < 0.2;
+        const isVertical = shoulder.y < this.get(landmarks, 23).y && Math.abs(shoulder.x - ankle.x) < 0.2;
+
+        if (isHorizontal && this.step === 0) {
+            this.step = 1;
+            return { state: 'PLANK', feedback: 'Up!' };
         }
-        
-        if (isVertical && this.state === 'PLANK') {
-             // Check if standing tall
-             this.state = 'STAND';
-             return { repIncrement: 1, state: 'STAND', feedback: 'Down!' };
+        if (isVertical && this.step === 1) {
+            this.step = 0;
+            return { repIncrement: 1, state: 'STAND', feedback: 'Down!' };
         }
-        
-        return { state: this.state, feedback: 'Keep moving' };
+        return { state: this.step === 1 ? 'PLANK' : 'STAND', feedback: 'Move!' };
     }
 }
 
-// Generic implementations for remaining to satisfy requirement
-class GenericRepExercise extends BaseExercise {
-    update(landmarks) { return { state: 'READY', feedback: 'Select another' }; }
+class ShoulderTap extends Plank {
+    update(landmarks) {
+        const lWrist = this.get(landmarks, 15);
+        const rWrist = this.get(landmarks, 16);
+        const lShoulder = this.get(landmarks, 11);
+        const rShoulder = this.get(landmarks, 12);
+        
+        const lTap = calculateDistance(lWrist, rShoulder) < 0.15;
+        const rTap = calculateDistance(rWrist, lShoulder) < 0.15;
+        
+        if ((lTap || rTap) && this.state !== 'TAP') {
+            this.state = 'TAP';
+            return { repIncrement: 0.5, feedback: 'Tap!' };
+        }
+        if (!lTap && !rTap) this.state = 'IDLE';
+        return { feedback: 'Tap shoulders' };
+    }
 }
 
-// Assign placeholders for the rest
-class PlankUpDown extends PushUp {} // Similar mechanics
-class PikePushUp extends PushUp {} // Similar mechanics
-class ShoulderTap extends Plank {} // Base is plank
-class GluteBridge extends Squats {} // Angle based
-class CalfRaise extends Squats {} // Vertical motion
-class MountainClimbers extends HighKnees {} // Similar
-class LegRaises extends Crunches {} // Folding motion
-class RussianTwists extends Crunches {} // Rotation hard to detect in 2D without depth, fallback to generic
+class CalfRaise extends BaseExercise {
+    update(landmarks) {
+        const ankle = this.get(landmarks, 27);
+        const knee = this.get(landmarks, 25);
+        if (!this.baseY) this.baseY = ankle.y;
+        
+        if (ankle.y < this.baseY - 0.05) {
+            this.state = 'UP';
+            return { state: 'UP', feedback: 'Down' };
+        }
+        if (this.state === 'UP' && ankle.y > this.baseY - 0.02) {
+            this.state = 'DOWN';
+            return { repIncrement: 1, state: 'DOWN', feedback: 'Up' };
+        }
+        return { feedback: 'Rise' };
+    }
+}
+
+class RussianTwists extends Crunches {
+    update(landmarks) {
+        const lShoulder = this.get(landmarks, 11);
+        const rShoulder = this.get(landmarks, 12);
+        if (lShoulder.x > rShoulder.x + 0.1 && this.state !== 'LEFT') {
+            this.state = 'LEFT';
+            return { repIncrement: 0.5, feedback: 'Right' };
+        }
+        if (rShoulder.x > lShoulder.x + 0.1 && this.state !== 'RIGHT') {
+            this.state = 'RIGHT';
+            return { repIncrement: 0.5, feedback: 'Left' };
+        }
+        return { feedback: 'Twist' };
+    }
+}
 
 // ==========================================
 // MAIN INITIALIZATION
 // ==========================================
 const engine = new ExerciseEngine();
 
-// Re-map the exercises to ensure all keys have logic
-engine.exercises.plankupdown = new PushUp(); // Reuse logic
-engine.exercises.pikepushup = new PushUp();
-engine.exercises.shouldertap = new Plank(); // Count time for now
-engine.exercises.glutebridge = new GluteBridge();
-engine.exercises.calfraise = new CalfRaise();
-engine.exercises.mountainclimbers = new HighKnees();
-engine.exercises.legraises = new LegRaises();
-engine.exercises.russiantwists = new Crunches();
-
-// MediaPipe Setup
 const pose = new Pose({locateFile: (file) => {
   return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
 }});
@@ -388,15 +391,12 @@ const pose = new Pose({locateFile: (file) => {
 pose.setOptions({
     modelComplexity: CONFIG.modelComplexity,
     smoothLandmarks: true,
-    enableSegmentation: false,
-    smoothSegmentation: false,
     minDetectionConfidence: CONFIG.minDetectionConfidence,
     minTrackingConfidence: CONFIG.minTrackingConfidence
 });
 
 pose.onResults(onResults);
 
-// Camera Setup
 const camera = new Camera(videoElement, {
     onFrame: async () => {
         if (STATE.isCameraRunning) {
@@ -407,10 +407,11 @@ const camera = new Camera(videoElement, {
     height: 480
 });
 
-// Event Listeners
 startBtn.addEventListener('click', () => {
     if (!STATE.isCameraRunning) {
         startCamera();
+    } else {
+        stopCamera();
     }
 });
 
@@ -420,9 +421,6 @@ exerciseSelector.addEventListener('change', (e) => {
     updateUI();
 });
 
-// ==========================================
-// CORE FUNCTIONS
-// ==========================================
 function startCamera() {
     loadingOverlay.classList.remove('hidden');
     camera.start()
@@ -432,7 +430,6 @@ function startCamera() {
             cameraStatus.innerText = "📷 LIVE";
             cameraStatus.classList.add('active');
             startBtn.innerText = "STOP SESSION";
-            startBtn.onclick = stopCamera;
         })
         .catch(err => {
             console.error(err);
@@ -442,61 +439,41 @@ function startCamera() {
 
 function stopCamera() {
     STATE.isCameraRunning = false;
-    // Camera stop method not exposed nicely in utils, just stop sending frames
     cameraStatus.innerText = "📷 OFF";
     cameraStatus.classList.remove('active');
     startBtn.innerText = "RUN SESSION";
-    startBtn.onclick = () => { if(!STATE.isCameraRunning) startCamera(); };
     engine.reset();
 }
 
 function onResults(results) {
     if (!results.poseLandmarks) return;
     
-    // Draw
-    canvasCtx.save();
-    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
-    // Auto-resize canvas
     canvasElement.width = videoElement.videoWidth;
     canvasElement.height = videoElement.videoHeight;
     
-    // Draw Video (Mirrored done via CSS, but canvas needs manual)
+    canvasCtx.save();
+    canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
-    
-    // Draw the actual video frame first!
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
-    // Draw Skeleton on top of the video
-    drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS,
-                 {color: '#00FF88', lineWidth: 4});
-    drawLandmarks(canvasCtx, results.poseLandmarks,
-                {color: '#FF4444', lineWidth: 2});
+    drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {color: '#00FF88', lineWidth: 4});
+    drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#FF4444', lineWidth: 2});
                 
     canvasCtx.restore();
-    
-    // Process Logic
     engine.process(results.poseLandmarks);
 }
 
 function updateUI() {
-    repDisplay.innerText = STATE.reps;
+    repDisplay.innerText = Math.floor(STATE.reps);
 }
 
 function updateFeedbackUI() {
     stateDisplay.innerText = STATE.movementState;
     messageDisplay.innerText = STATE.lastFeedback;
-    
-    if (STATE.movementState === 'UP' || STATE.movementState === 'STAND') {
-        stateDisplay.style.color = '#00ff88';
-    } else if (STATE.movementState === 'DOWN' || STATE.movementState === 'PLANK') {
-        stateDisplay.style.color = '#ff4444';
-    } else {
-        stateDisplay.style.color = '#ffffff';
-    }
+    stateDisplay.style.color = (STATE.movementState === 'UP' || STATE.movementState === 'STAND' || STATE.movementState === 'OPEN') ? '#00ff88' : 
+                               (STATE.movementState === 'DOWN' || STATE.movementState === 'PLANK' || STATE.movementState === 'CLOSED') ? '#ff4444' : '#ffffff';
 }
 
-// Init
 loadingOverlay.classList.add('hidden');
 console.log("AI Rep Counter Pro Loaded");
