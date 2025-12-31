@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI Rep Counter Pro</title>
+    <link rel="stylesheet" href="/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Video and Canvas Layers -->
+        <video class="input_video" playsinline webkit-playsinline muted style="display: none;"></video>
+        <canvas class="output_canvas"></canvas>
+
+        <!-- Loading Overlay -->
+        <div id="loading-overlay" class="overlay active">
+            <div class="spinner"></div>
+            <p>Initializing AI Core...</p>
+        </div>
+
+        <!-- UI Overlay -->
+        <div class="ui-layer">
+            <header class="top-bar">
+                <div class="selector-container">
+                    <select id="exercise-selector">
+                        <option value="pushup">Push-up</option>
+                        <option value="plankupdown">Plank Up-Down</option>
+                        <option value="pikepushup">Pike Push-up</option>
+                        <option value="shouldertap">Shoulder Tap</option>
+                        <option value="lunge">Lunge</option>
+                        <option value="glutebridge">Glute Bridge</option>
+                        <option value="calfraise">Calf Raise</option>
+                        <option value="plank">Plank (Static)</option>
+                        <option value="highknees">High Knees</option>
+                        <option value="burpees">Burpees</option>
+                        <option value="mountainclimbers">Mountain Climbers</option>
+                        <option value="jumpingjacks">Jumping Jacks</option>
+                        <option value="legraises">Leg Raises</option>
+                        <option value="russiantwists">Russian Twists</option>
+                        <option value="crunches">Crunches</option>
+                        <option value="squats">Squats</option>
+                    </select>
+                </div>
+                <div class="status-badge" id="camera-status">📷 OFF</div>
+            </header>
+
+            <main class="stats-container">
+                <div class="counter-box">
+                    <span class="label">REPS</span>
+                    <span id="rep-count" class="big-number">0</span>
+                </div>
+                <div class="feedback-box">
+                    <div id="feedback-state" class="state-indicator">READY</div>
+                    <div id="feedback-message" class="sub-text">Select exercise & start</div>
+                </div>
+            </main>
+
+            <footer class="controls">
+                <button id="start-btn" class="primary-btn">RUN SESSION</button>
+            </footer>
+        </div>
+    </div>
+
+    <script type="module" src="/app.js"></script>
+</body>
+</html>

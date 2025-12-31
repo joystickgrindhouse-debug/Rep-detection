@@ -1,0 +1,141 @@
+Overview
+
+Solo Mode is a single-player fitness game where users draw exercise cards and perform the prescribed exercises while real-time pose detection via MediaPipe tracks their form and counts repetitions (reps).
+
+Game Flow
+
+1. Session Start
+
+User clicks "START WORKOUT"
+Camera permission is requested
+MediaPipe Pose detection initializes
+First card is automatically drawn
+Workout timer begins
+2. Card Draw
+
+A random card is drawn from the exercise deck
+Card determines:
+Exercise Category (suit): Arms ♥, Legs ♠, Core ♣, or Cardio ♦
+Exercise Name (value): One of 4 exercises per category
+Rep Goal (card value): 2-13 reps
+3. Exercise Execution
+
+User performs the exercise shown on the card
+Pose detection tracks body landmarks in real-time
+ExerciseEngine analyzes pose to count completed reps
+Rep counter increments as valid reps are detected
+Audio feedback announces each rep ("one", "two", "three", etc.)
+4. Rep Goal Achievement
+
+When current rep count reaches the card's rep goal:
+"TARGET REACHED! 💪" toast notification appears
+Audio feedback plays: "Target reached!"
+1.5 second pause
+Next card automatically drawn
+5. Session End
+
+User clicks "END SESSION"
+Camera stream is stopped
+Session statistics calculated
+Rewards distributed
+Card System
+
+Deck Composition
+
+Total: 16 unique exercises across 4 categories (4 per category)
+
+Arms ♥
+
+Push-ups
+Plank Up-Downs
+Pike Push ups
+Shoulder Taps
+Legs ♠
+
+Squats
+Lunges
+Glute Bridges
+Calf Raises
+Core ♣
+
+Crunches
+Plank
+Russian Twists
+Leg Raises
+Cardio ♦
+
+Jumping Jacks
+High Knees
+Burpees
+Mountain Climbers
+Card Value Mapping
+
+Card	Rep Goal
+2-10	Face value (2-10 reps)
+J	11 reps
+Q	12 reps
+K	13 reps
+Card Generation
+
+Cards are drawn completely randomly:
+
+Random suit selected (1 of 4 categories)
+Random exercise selected from that category (1 of 4)
+Random rep goal selected (2-13)
+Each draw is independent; exercises can be repeated in sequence.
+
+Pose Detection & Rep Counting
+
+MediaPipe Pose System
+
+Tracks 33 body landmarks (joints, angles)
+Runs at real-time frame rate from video stream
+Displays skeleton overlay on video (green lines connecting joints)
+Red dots indicate tracked landmarks
+ExerciseEngine
+
+Analyzes landmark data per exercise
+Implements form validation for each exercise type
+Counts valid reps based on:
+Joint angle thresholds
+Movement range validation
+Proper form completion
+Visibility confidence checks
+Example: Push-up Detection
+
+Detects arm bending/extension
+Validates shoulder-elbow-wrist alignment
+Counts full rep when arms return to extended position
+Prevents false counts from partial movements
+Stats & Progression
+
+Session Tracking
+
+Total Reps: Cumulative count of all reps in session
+Current Exercise: Current card's exercise name
+Current Reps: Reps completed for current exercise
+Rep Goal: Target reps for current card
+Real-Time Display
+
+Header shows session totals
+Card displays current target
+Rep progress bar/counter visible
+Session Completion
+
+When user ends session:
+
+Final session statistics calculated
+Rewards computed and distributed
+Results saved to user profile
+Reward System
+
+Dice Calculation
+
+Formula: Math.floor(totalReps / 30)
+Example: 95 total reps = 3 dice earned
+Dice are game currency for other game modes
+Experience Tracking
+
+Total reps contributed to user profile
+Dice balance incremented
+Stats persisted in Firebase
