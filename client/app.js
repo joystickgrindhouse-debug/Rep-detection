@@ -418,25 +418,28 @@ function onResults(results) {
     if (now - lastFrameTime < 1000 / targetFPS) return;
     lastFrameTime = now;
     
+    // Explicitly set canvas size to match video resolution
     canvasElement.width = videoElement.videoWidth || 640;
     canvasElement.height = videoElement.videoHeight || 480;
     
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+    
+    // Mirroring logic
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
     
+    // 1. Draw the Video frame first
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
+    // 2. Draw Skeleton on top
     if (results.poseLandmarks) {
-        // Full Skeleton Overlay with Correct Form Colors
-        // Connections in Neon Green
+        // Force drawing regardless of visibility for debugging
         drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {
             color: '#00FF88', 
             lineWidth: 5 
         });
         
-        // Landmarks in Bright Red
         drawLandmarks(canvasCtx, results.poseLandmarks, {
             color: '#FF4444', 
             lineWidth: 2,
@@ -450,3 +453,4 @@ function onResults(results) {
 }
 
 loadingOverlay.classList.add('hidden');
+console.log("AI Rep Counter Pro Ready");
