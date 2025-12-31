@@ -40,7 +40,6 @@ const canvasCtx = canvasElement.getContext('2d');
 const repDisplay = document.getElementById('rep-count');
 const stateDisplay = document.getElementById('feedback-state');
 const messageDisplay = document.getElementById('feedback-message');
-const exerciseSelector = document.getElementById('exercise-selector');
 const startBtn = document.getElementById('start-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const cameraStatus = document.getElementById('camera-status');
@@ -56,7 +55,6 @@ const cardValue = document.getElementById('card-value');
 const cardExName = document.getElementById('card-exercise-name');
 const cardProgress = document.getElementById('card-progress-bar');
 const cardTarget = document.getElementById('card-target');
-const selectorWrapper = document.getElementById('selector-wrapper');
 const standardStats = document.getElementById('standard-stats');
 
 function speak(text) {
@@ -250,6 +248,7 @@ class Squats extends BaseExercise {
             return { state: 'UP', feedback: 'Squat down' };
         }
         if (angle < 110) {
+            this.state = 'DOWN';
             this.state = 'DOWN';
             return { state: 'DOWN', feedback: 'Drive up!' };
         }
@@ -508,12 +507,6 @@ startBtn.addEventListener('click', () => {
     else stopCamera();
 });
 
-exerciseSelector.addEventListener('change', (e) => {
-    STATE.currentExercise = e.target.value;
-    engine.reset();
-    updateUI();
-});
-
 function startCamera() {
     loadingOverlay.classList.remove('hidden');
     
@@ -521,7 +514,6 @@ function startCamera() {
     STATE.isSoloMode = true;
     soloStats.classList.remove('hidden');
     exerciseCard.classList.remove('hidden');
-    selectorWrapper.classList.add('hidden');
     standardStats.classList.add('hidden');
     STATE.totalReps = 0;
     startTimer();
@@ -544,7 +536,6 @@ function stopCamera() {
     STATE.isSoloMode = false;
     soloStats.classList.add('hidden');
     exerciseCard.classList.add('hidden');
-    selectorWrapper.classList.remove('hidden');
     standardStats.classList.remove('hidden');
     stopTimer();
     
