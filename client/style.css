@@ -355,17 +355,17 @@ body {
     height: 40px;
     border: 2px solid var(--accent-color);
     border-radius: 8px;
-    background: rgba(255, 0, 0, 0.1);
-    color: var(--accent-color);
+    background: var(--accent-color);
+    color: #ffffff;
     cursor: pointer;
     text-decoration: none;
     transition: all 0.2s ease;
-    box-shadow: 0 0 10px var(--accent-glow);
+    box-shadow: 0 0 15px var(--accent-glow);
 }
 
 .home-button:hover {
-    background: rgba(255, 0, 0, 0.2);
-    box-shadow: 0 0 20px var(--accent-glow);
+    background: #ff5555;
+    box-shadow: 0 0 25px var(--accent-glow);
     transform: scale(1.05);
 }
 
