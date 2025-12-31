@@ -3,9 +3,9 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 const CONFIG = {
-    minDetectionConfidence: 0.5,
-    minTrackingConfidence: 0.5,
-    modelComplexity: 0,
+    minDetectionConfidence: 0.6,
+    minTrackingConfidence: 0.6,
+    modelComplexity: 1, // Full model for better extension detection
     visibilityThreshold: 0.5, 
 };
 
@@ -396,16 +396,10 @@ function stopCamera() {
     engine.reset();
 }
 
-let lastFrameTime = 0;
-const targetFPS = 30;
-
 function onResults(results) {
     if (!results.image) return; 
     
-    const now = performance.now();
-    if (now - lastFrameTime < 1000 / targetFPS) return;
-    lastFrameTime = now;
-    
+    // Smooth drawing: Only update if we have new data
     canvasElement.width = videoElement.videoWidth || 640;
     canvasElement.height = videoElement.videoHeight || 480;
     
@@ -417,7 +411,6 @@ function onResults(results) {
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
     if (results.poseLandmarks) {
-        // Use MediaPipe's POSE_CONNECTIONS specifically
         const connections = [
             [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], // Upper body
             [11, 23], [12, 24], [23, 24], // Torso
@@ -425,9 +418,11 @@ function onResults(results) {
             [27, 31], [28, 32], [27, 29], [28, 30] // Feet
         ];
 
-        // Draw connections manually for maximum reliability
         canvasCtx.strokeStyle = '#00FF88';
-        canvasCtx.lineWidth = 5;
+        canvasCtx.lineWidth = 4;
+        canvasCtx.lineCap = 'round';
+        canvasCtx.lineJoin = 'round';
+        
         connections.forEach(([i, j]) => {
             const p1 = results.poseLandmarks[i];
             const p2 = results.poseLandmarks[j];
@@ -439,11 +434,10 @@ function onResults(results) {
             }
         });
         
-        // Draw landmarks
         drawLandmarks(canvasCtx, results.poseLandmarks, {
             color: '#FF4444', 
-            lineWidth: 2,
-            radius: 4
+            lineWidth: 1,
+            radius: 3
         });
 
         engine.process(results.poseLandmarks);
