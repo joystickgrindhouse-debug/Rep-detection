@@ -8,8 +8,19 @@ export async function initializeFirebase() {
   const { getAuth } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-auth.js');
   const { getFirestore } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
 
+  // Fetch API key from backend to keep it secure
+  let apiKey = '';
+  try {
+    const response = await fetch('/api/firebase-config');
+    const config = await response.json();
+    apiKey = config.apiKey;
+  } catch (error) {
+    console.error('Failed to fetch Firebase API key:', error);
+    return;
+  }
+
   const firebaseConfig = {
-    apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+    apiKey: apiKey,
     authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
     projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
     storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
