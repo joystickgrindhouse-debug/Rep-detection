@@ -76,6 +76,10 @@
         </div>
     </div>
 
+    <script type="module">
+        import { initializeFirebase } from '/firebase-service.js';
+        initializeFirebase().catch(error => console.error('Firebase init failed:', error));
+    </script>
     <script type="module" src="/app.js"></script>
 </body>
 </html>

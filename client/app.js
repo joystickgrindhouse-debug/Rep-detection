@@ -533,7 +533,7 @@ function startCamera() {
     });
 }
 
-function stopCamera() {
+async function stopCamera() {
     STATE.isCameraRunning = false;
     STATE.isSoloMode = false;
     soloStats.classList.add('hidden');
@@ -544,6 +544,16 @@ function stopCamera() {
     cameraStatus.innerText = "📷 OFF";
     cameraStatus.classList.remove('active');
     startBtn.innerText = "RUN SESSION";
+    
+    // Send stats to Firebase before reset
+    try {
+        const { sendRepCountToFirebase } = await import('./firebase-service.js');
+        const sessionDuration = Date.now() - STATE.sessionStartTime;
+        await sendRepCountToFirebase(STATE.totalReps, sessionDuration, STATE.currentExercise);
+    } catch (error) {
+        console.error('Error sending stats:', error);
+    }
+    
     engine.reset();
 }
 
