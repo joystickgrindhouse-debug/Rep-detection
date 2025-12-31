@@ -57,6 +57,21 @@ function calculateDistance(a, b) {
     return Math.sqrt(Math.pow(a.x - b.x, 2) + Math.pow(a.y - b.y, 2));
 }
 
+function updateUI() {
+    if (repDisplay) repDisplay.innerText = Math.floor(STATE.reps);
+}
+
+function updateFeedbackUI() {
+    if (!stateDisplay || !messageDisplay) return;
+    stateDisplay.innerText = STATE.movementState;
+    messageDisplay.innerText = STATE.lastFeedback;
+    const colorMap = {
+        'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88',
+        'DOWN': '#ff4444', 'PLANK': '#ff4444', 'CLOSED': '#ff4444'
+    };
+    stateDisplay.style.color = colorMap[STATE.movementState] || '#ffffff';
+}
+
 // ==========================================
 // EXERCISE DEFINITIONS
 // ==========================================
@@ -397,7 +412,7 @@ let lastFrameTime = 0;
 const targetFPS = 30;
 
 function onResults(results) {
-    if (!results.image) return; // Ensure image is present
+    if (!results.image) return; 
     
     const now = performance.now();
     if (now - lastFrameTime < 1000 / targetFPS) return;
@@ -411,7 +426,6 @@ function onResults(results) {
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
     
-    // Explicitly draw the image from the results
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
     if (results.poseLandmarks) {
