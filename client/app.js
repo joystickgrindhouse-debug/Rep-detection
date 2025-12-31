@@ -575,10 +575,12 @@ function onResults(results) {
             [27, 31], [28, 32], [27, 29], [28, 30] 
         ];
 
-        canvasCtx.strokeStyle = '#00FF88';
+        canvasCtx.strokeStyle = '#ff0000';
         canvasCtx.lineWidth = 4;
         canvasCtx.lineCap = 'round';
         canvasCtx.lineJoin = 'round';
+        canvasCtx.shadowBlur = 10;
+        canvasCtx.shadowColor = 'rgba(255, 0, 0, 0.8)';
         
         connections.forEach(([i, j]) => {
             const p1 = results.poseLandmarks[i];
@@ -592,7 +594,8 @@ function onResults(results) {
         });
         
         drawLandmarks(canvasCtx, results.poseLandmarks, {
-            color: '#FF4444', 
+            color: '#ffffff', 
+            fillColor: '#ff0000',
             lineWidth: 1,
             radius: 3
         });
