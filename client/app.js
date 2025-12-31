@@ -17,7 +17,22 @@ const STATE = {
     lastFeedback: 'Get Ready',
     startTime: null, 
     landmarks: null,
+    // Solo Mode State
+    isSoloMode: false,
+    totalReps: 0,
+    currentCard: null,
+    sessionStartTime: null,
+    timerInterval: null
 };
+
+const EXERCISES = {
+    '♥': ['pushup', 'plankupdown', 'pikepushup', 'shouldertap'],
+    '♠': ['squats', 'lunge', 'glutebridge', 'calfraise'],
+    '♣': ['crunches', 'plank', 'russiantwists', 'legraises'],
+    '♦': ['jumpingjacks', 'highknees', 'burpees', 'mountainclimbers']
+};
+
+const SUIT_NAMES = { '♥': 'Arms', '♠': 'Legs', '♣': 'Core', '♦': 'Cardio' };
 
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
@@ -29,6 +44,98 @@ const exerciseSelector = document.getElementById('exercise-selector');
 const startBtn = document.getElementById('start-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const cameraStatus = document.getElementById('camera-status');
+
+// Solo Mode UI Elements
+const soloStats = document.getElementById('solo-mode-stats');
+const totalRepsDisplay = document.getElementById('total-reps');
+const diceDisplay = document.getElementById('dice-earned');
+const timerDisplay = document.getElementById('session-timer');
+const exerciseCard = document.getElementById('exercise-card');
+const cardSuit = document.getElementById('card-suit');
+const cardValue = document.getElementById('card-value');
+const cardExName = document.getElementById('card-exercise-name');
+const cardProgress = document.getElementById('card-progress-bar');
+const cardTarget = document.getElementById('card-target');
+const selectorWrapper = document.getElementById('selector-wrapper');
+const standardStats = document.getElementById('standard-stats');
+
+function speak(text) {
+    const utterance = new SpeechSynthesisUtterance(text);
+    window.speechSynthesis.speak(utterance);
+}
+
+function drawNewCard() {
+    const suits = Object.keys(EXERCISES);
+    const suit = suits[Math.floor(Math.random() * suits.length)];
+    const exerciseList = EXERCISES[suit];
+    const exercise = exerciseList[Math.floor(Math.random() * exerciseList.length)];
+    
+    // 2-10, J=11, Q=12, K=13
+    const valueNum = Math.floor(Math.random() * 12) + 2;
+    let valueLabel = valueNum.toString();
+    if (valueNum === 11) valueLabel = 'J';
+    if (valueNum === 12) valueLabel = 'Q';
+    if (valueNum === 13) valueLabel = 'K';
+
+    STATE.currentCard = {
+        suit,
+        exercise,
+        target: valueNum,
+        label: valueLabel
+    };
+
+    STATE.currentExercise = exercise;
+    STATE.reps = 0;
+    engine.reset();
+    
+    // Update UI
+    cardSuit.innerText = suit;
+    cardValue.innerText = valueLabel;
+    cardExName.innerText = exercise.toUpperCase().replace(/([A-Z])/g, ' $1').trim();
+    cardTarget.innerText = valueNum;
+    cardProgress.style.width = '0%';
+    
+    speak(STATE.currentCard.exercise);
+}
+
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.innerText = message;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 1500);
+}
+
+function updateSoloUI() {
+    if (!STATE.isSoloMode) return;
+    
+    totalRepsDisplay.innerText = STATE.totalReps;
+    diceDisplay.innerText = Math.floor(STATE.totalReps / 30);
+    
+    const progress = (STATE.reps / STATE.currentCard.target) * 100;
+    cardProgress.style.width = `${Math.min(progress, 100)}%`;
+
+    if (STATE.reps >= STATE.currentCard.target) {
+        showToast("TARGET REACHED! 💪");
+        speak("Target reached");
+        STATE.totalReps += STATE.reps;
+        setTimeout(drawNewCard, 1500);
+    }
+}
+
+function startTimer() {
+    STATE.sessionStartTime = Date.now();
+    STATE.timerInterval = setInterval(() => {
+        const elapsed = Math.floor((Date.now() - STATE.sessionStartTime) / 1000);
+        const mins = Math.floor(elapsed / 60).toString().padStart(2, '0');
+        const secs = (elapsed % 60).toString().padStart(2, '0');
+        timerDisplay.innerText = `${mins}:${secs}`;
+    }, 1000);
+}
+
+function stopTimer() {
+    clearInterval(STATE.timerInterval);
+}
 
 function calculateAngle(a, b, c) {
     if (!a || !b || !c) return -1;
@@ -355,6 +462,10 @@ class ExerciseEngine {
         if (result.repIncrement) {
             STATE.reps += result.repIncrement;
             updateUI();
+            if (STATE.isSoloMode) {
+                updateSoloUI();
+                speak(Math.floor(STATE.reps).toString());
+            }
         }
         STATE.movementState = result.state || STATE.movementState;
         STATE.lastFeedback = result.feedback || STATE.lastFeedback;
@@ -405,6 +516,17 @@ exerciseSelector.addEventListener('change', (e) => {
 
 function startCamera() {
     loadingOverlay.classList.remove('hidden');
+    
+    // Auto-enable Solo Mode
+    STATE.isSoloMode = true;
+    soloStats.classList.remove('hidden');
+    exerciseCard.classList.remove('hidden');
+    selectorWrapper.classList.add('hidden');
+    standardStats.classList.add('hidden');
+    STATE.totalReps = 0;
+    startTimer();
+    drawNewCard();
+
     camera.start().then(() => {
         STATE.isCameraRunning = true;
         loadingOverlay.classList.add('hidden');
@@ -419,6 +541,13 @@ function startCamera() {
 
 function stopCamera() {
     STATE.isCameraRunning = false;
+    STATE.isSoloMode = false;
+    soloStats.classList.add('hidden');
+    exerciseCard.classList.add('hidden');
+    selectorWrapper.classList.remove('hidden');
+    standardStats.classList.remove('hidden');
+    stopTimer();
+    
     cameraStatus.innerText = "📷 OFF";
     cameraStatus.classList.remove('active');
     startBtn.innerText = "RUN SESSION";

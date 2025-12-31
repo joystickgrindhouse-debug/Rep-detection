@@ -24,7 +24,18 @@
         <!-- UI Overlay -->
         <div class="ui-layer">
             <header class="top-bar">
-                <div class="selector-container">
+                <div id="solo-mode-stats" class="session-stats hidden">
+                    <div class="stat-item">
+                        <span class="stat-label">TOTAL REPS</span>
+                        <span id="total-reps" class="stat-value">0</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-label">DICE</span>
+                        <span id="dice-earned" class="stat-value">0</span>
+                    </div>
+                    <div id="session-timer" class="stat-value">00:00</div>
+                </div>
+                <div class="selector-container" id="selector-wrapper">
                     <select id="exercise-selector">
                         <option value="pushup">Push-up</option>
                         <option value="plankupdown">Plank Up-Down</option>
@@ -48,7 +59,22 @@
             </header>
 
             <main class="stats-container">
-                <div class="counter-box">
+                <!-- Solo Mode Card -->
+                <div id="exercise-card" class="card-display hidden">
+                    <div class="card-header">
+                        <span id="card-suit" class="suit">♥</span>
+                        <span id="card-value" class="value">A</span>
+                    </div>
+                    <div class="card-body">
+                        <h2 id="card-exercise-name">PUSH-UPS</h2>
+                        <div class="progress-container">
+                            <div id="card-progress-bar" class="progress-bar"></div>
+                        </div>
+                        <div class="target-text">TARGET: <span id="card-target">10</span></div>
+                    </div>
+                </div>
+
+                <div id="standard-stats" class="counter-box">
                     <span class="label">REPS</span>
                     <span id="rep-count" class="big-number">0</span>
                 </div>
