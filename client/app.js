@@ -3,10 +3,10 @@ import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
 const CONFIG = {
-    minDetectionConfidence: 0.6,
-    minTrackingConfidence: 0.6,
-    modelComplexity: 1, // Full model for better extension detection
-    visibilityThreshold: 0.5, 
+    minDetectionConfidence: 0.5, // Lowered slightly for more robust detection
+    minTrackingConfidence: 0.5,
+    modelComplexity: 1, 
+    visibilityThreshold: 0.4, // Lowered threshold to catch arm extensions better
 };
 
 const STATE = {
@@ -82,16 +82,27 @@ class PushUp extends BaseExercise {
         const leftShoulder = this.get(landmarks, 11);
         const leftElbow = this.get(landmarks, 13);
         const leftWrist = this.get(landmarks, 15);
-        const angle = calculateAngle(leftShoulder, leftElbow, leftWrist);
+        
+        // Try left side first, then fallback to right for better side-view detection
+        let angle = calculateAngle(leftShoulder, leftElbow, leftWrist);
+        if (angle === -1) {
+            const rightShoulder = this.get(landmarks, 12);
+            const rightElbow = this.get(landmarks, 14);
+            const rightWrist = this.get(landmarks, 16);
+            angle = calculateAngle(rightShoulder, rightElbow, rightWrist);
+        }
+
         if (angle === -1) return { feedback: 'Align side to camera' };
-        if (angle > 160) {
+        
+        // Adjusted thresholds for more forgiving extension detection
+        if (angle > 155) { // Was 160
             if (this.state === 'DOWN') {
                 this.state = 'UP';
                 return { repIncrement: 1, state: 'UP', feedback: 'Good rep!' };
             }
             return { state: 'UP', feedback: 'Go down' };
         } 
-        if (angle < 90) {
+        if (angle < 95) { // Was 90
             this.state = 'DOWN';
             return { state: 'DOWN', feedback: 'Push up!' };
         }
@@ -399,7 +410,6 @@ function stopCamera() {
 function onResults(results) {
     if (!results.image) return; 
     
-    // Smooth drawing: Only update if we have new data
     canvasElement.width = videoElement.videoWidth || 640;
     canvasElement.height = videoElement.videoHeight || 480;
     
@@ -412,10 +422,10 @@ function onResults(results) {
     
     if (results.poseLandmarks) {
         const connections = [
-            [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], // Upper body
-            [11, 23], [12, 24], [23, 24], // Torso
-            [23, 25], [25, 27], [24, 26], [26, 28], // Lower body
-            [27, 31], [28, 32], [27, 29], [28, 30] // Feet
+            [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], 
+            [11, 23], [12, 24], [23, 24], 
+            [23, 25], [25, 27], [24, 26], [26, 28], 
+            [27, 31], [28, 32], [27, 29], [28, 30] 
         ];
 
         canvasCtx.strokeStyle = '#00FF88';
