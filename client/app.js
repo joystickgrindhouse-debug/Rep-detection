@@ -465,7 +465,10 @@ function onResults(results) {
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
     
-    // Draw Skeleton
+    // Draw the actual video frame first!
+    canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
+    
+    // Draw Skeleton on top of the video
     drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS,
                  {color: '#00FF88', lineWidth: 4});
     drawLandmarks(canvasCtx, results.poseLandmarks,
