@@ -6,9 +6,9 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 // CONFIGURATION & STATE
 // ==========================================
 const CONFIG = {
-    minDetectionConfidence: 0.5, // Lowered for performance
-    minTrackingConfidence: 0.5,  // Lowered for performance
-    modelComplexity: 0,          // Lite model for speed/mobile safety
+    minDetectionConfidence: 0.5,
+    minTrackingConfidence: 0.5,
+    modelComplexity: 0,
     visibilityThreshold: 0.5, 
 };
 
@@ -58,7 +58,7 @@ function calculateDistance(a, b) {
 }
 
 // ==========================================
-// EXERCISE LOGIC ENGINE
+// EXERCISE DEFINITIONS
 // ==========================================
 class BaseExercise {
     constructor() {
@@ -394,44 +394,33 @@ function stopCamera() {
 }
 
 let lastFrameTime = 0;
-const targetFPS = 30; // Limit processing rate
+const targetFPS = 30;
 
 function onResults(results) {
-    if (!results.poseLandmarks) return;
+    if (!results.image) return; // Ensure image is present
     
-    // Performance: Skip frames if processing too fast
     const now = performance.now();
     if (now - lastFrameTime < 1000 / targetFPS) return;
     lastFrameTime = now;
     
-    canvasElement.width = videoElement.videoWidth;
-    canvasElement.height = videoElement.videoHeight;
+    canvasElement.width = videoElement.videoWidth || 640;
+    canvasElement.height = videoElement.videoHeight || 480;
     
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
+    
+    // Explicitly draw the image from the results
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
-    drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {color: '#00FF88', lineWidth: 4});
-    drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#FF4444', lineWidth: 2});
-    canvasCtx.restore();
+    if (results.poseLandmarks) {
+        drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {color: '#00FF88', lineWidth: 4});
+        drawLandmarks(canvasCtx, results.poseLandmarks, {color: '#FF4444', lineWidth: 2});
+        engine.process(results.poseLandmarks);
+    }
     
-    engine.process(results.poseLandmarks);
-}
-
-function updateUI() {
-    repDisplay.innerText = Math.floor(STATE.reps);
-}
-
-function updateFeedbackUI() {
-    stateDisplay.innerText = STATE.movementState;
-    messageDisplay.innerText = STATE.lastFeedback;
-    const colorMap = {
-        'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88',
-        'DOWN': '#ff4444', 'PLANK': '#ff4444', 'CLOSED': '#ff4444'
-    };
-    stateDisplay.style.color = colorMap[STATE.movementState] || '#ffffff';
+    canvasCtx.restore();
 }
 
 loadingOverlay.classList.add('hidden');
