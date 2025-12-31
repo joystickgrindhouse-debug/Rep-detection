@@ -2,9 +2,6 @@ import { Pose } from '@mediapipe/pose';
 import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
-// ==========================================
-// CONFIGURATION & STATE
-// ==========================================
 const CONFIG = {
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
@@ -22,9 +19,6 @@ const STATE = {
     landmarks: null,
 };
 
-// ==========================================
-// DOM ELEMENTS
-// ==========================================
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvasCtx = canvasElement.getContext('2d');
@@ -36,9 +30,6 @@ const startBtn = document.getElementById('start-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const cameraStatus = document.getElementById('camera-status');
 
-// ==========================================
-// UTILITY FUNCTIONS
-// ==========================================
 function calculateAngle(a, b, c) {
     if (!a || !b || !c) return -1;
     if (a.visibility < CONFIG.visibilityThreshold || 
@@ -72,9 +63,6 @@ function updateFeedbackUI() {
     stateDisplay.style.color = colorMap[STATE.movementState] || '#ffffff';
 }
 
-// ==========================================
-// EXERCISE DEFINITIONS
-// ==========================================
 class BaseExercise {
     constructor() {
         this.state = 'UP';
@@ -418,28 +406,40 @@ function onResults(results) {
     if (now - lastFrameTime < 1000 / targetFPS) return;
     lastFrameTime = now;
     
-    // Explicitly set canvas size to match video resolution
     canvasElement.width = videoElement.videoWidth || 640;
     canvasElement.height = videoElement.videoHeight || 480;
     
     canvasCtx.save();
     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-    
-    // Mirroring logic
     canvasCtx.translate(canvasElement.width, 0);
     canvasCtx.scale(-1, 1);
     
-    // 1. Draw the Video frame first
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
-    // 2. Draw Skeleton on top
     if (results.poseLandmarks) {
-        // Force drawing regardless of visibility for debugging
-        drawConnectors(canvasCtx, results.poseLandmarks, Pose.POSE_CONNECTIONS, {
-            color: '#00FF88', 
-            lineWidth: 5 
+        // Use MediaPipe's POSE_CONNECTIONS specifically
+        const connections = [
+            [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], // Upper body
+            [11, 23], [12, 24], [23, 24], // Torso
+            [23, 25], [25, 27], [24, 26], [26, 28], // Lower body
+            [27, 31], [28, 32], [27, 29], [28, 30] // Feet
+        ];
+
+        // Draw connections manually for maximum reliability
+        canvasCtx.strokeStyle = '#00FF88';
+        canvasCtx.lineWidth = 5;
+        connections.forEach(([i, j]) => {
+            const p1 = results.poseLandmarks[i];
+            const p2 = results.poseLandmarks[j];
+            if (p1 && p2 && p1.visibility > 0.5 && p2.visibility > 0.5) {
+                canvasCtx.beginPath();
+                canvasCtx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
+                canvasCtx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
+                canvasCtx.stroke();
+            }
         });
         
+        // Draw landmarks
         drawLandmarks(canvasCtx, results.poseLandmarks, {
             color: '#FF4444', 
             lineWidth: 2,
