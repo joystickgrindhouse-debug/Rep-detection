@@ -5,7 +5,7 @@ import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 const CONFIG = {
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
-    modelComplexity: 1, 
+    modelComplexity: 0, 
     visibilityThreshold: 0.2, // Extremely low threshold to maintain tracking
 };
 
@@ -571,39 +571,36 @@ function onResults(results) {
     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height);
     
     if (results.poseLandmarks) {
+        engine.process(results.poseLandmarks);
+
         const connections = [
             [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], 
             [11, 23], [12, 24], [23, 24], 
-            [23, 25], [25, 27], [24, 26], [26, 28], 
-            [27, 31], [28, 32], [27, 29], [28, 30] 
+            [23, 25], [25, 27], [24, 26], [26, 28]
         ];
 
         canvasCtx.strokeStyle = '#ff0000';
-        canvasCtx.lineWidth = 4;
+        canvasCtx.lineWidth = 3;
         canvasCtx.lineCap = 'round';
         canvasCtx.lineJoin = 'round';
-        canvasCtx.shadowBlur = 10;
-        canvasCtx.shadowColor = 'rgba(255, 0, 0, 0.8)';
         
+        canvasCtx.beginPath();
         connections.forEach(([i, j]) => {
             const p1 = results.poseLandmarks[i];
             const p2 = results.poseLandmarks[j];
             if (p1 && p2 && p1.visibility > 0.1 && p2.visibility > 0.1) {
-                canvasCtx.beginPath();
                 canvasCtx.moveTo(p1.x * canvasElement.width, p1.y * canvasElement.height);
                 canvasCtx.lineTo(p2.x * canvasElement.width, p2.y * canvasElement.height);
-                canvasCtx.stroke();
             }
         });
+        canvasCtx.stroke();
         
         drawLandmarks(canvasCtx, results.poseLandmarks, {
             color: '#ffffff', 
             fillColor: '#ff0000',
             lineWidth: 1,
-            radius: 3
+            radius: 2
         });
-
-        engine.process(results.poseLandmarks);
     }
     
     canvasCtx.restore();
