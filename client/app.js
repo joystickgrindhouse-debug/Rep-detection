@@ -15,6 +15,7 @@ const STATE = {
     reps: 0,
     movementState: 'IDLE',
     lastFeedback: 'Get Ready',
+    isGoodForm: true,
     startTime: null, 
     landmarks: null,
     // Solo Mode State
@@ -163,6 +164,14 @@ function updateFeedbackUI() {
     if (!stateDisplay || !messageDisplay) return;
     stateDisplay.innerText = STATE.movementState;
     messageDisplay.innerText = STATE.lastFeedback;
+    
+    // Define good vs bad form based on feedback keywords
+    const badFormKeywords = ['lower', 'hips', 'align', 'legs', 'hands', 'view', 'form', 'push up', 'squat down', 'drive up'];
+    const lowerFeedback = STATE.lastFeedback.toLowerCase();
+    const isBadForm = badFormKeywords.some(keyword => lowerFeedback.includes(keyword));
+    
+    STATE.isGoodForm = !isBadForm;
+
     const colorMap = {
         'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88',
         'DOWN': '#ff4444', 'PLANK': '#ff4444', 'CLOSED': '#ff4444'
@@ -579,7 +588,8 @@ function onResults(results) {
             [23, 25], [25, 27], [24, 26], [26, 28]
         ];
 
-        canvasCtx.strokeStyle = '#ff0000';
+        const skeletonColor = STATE.isGoodForm ? '#00ff88' : '#ff4444';
+        canvasCtx.strokeStyle = skeletonColor;
         canvasCtx.lineWidth = 3;
         canvasCtx.lineCap = 'round';
         canvasCtx.lineJoin = 'round';
@@ -597,7 +607,7 @@ function onResults(results) {
         
         drawLandmarks(canvasCtx, results.poseLandmarks, {
             color: '#ffffff', 
-            fillColor: '#ff0000',
+            fillColor: skeletonColor,
             lineWidth: 1,
             radius: 2
         });
