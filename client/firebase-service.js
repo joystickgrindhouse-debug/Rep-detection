@@ -1,4 +1,4 @@
-// Firebase Service for Stats
+// Firebase Service for Stats and Raffle Tickets
 let firebaseApp = null;
 
 export async function initializeFirebase() {
@@ -38,13 +38,13 @@ export async function initializeFirebase() {
   }
 }
 
-export async function sendRepCountToFirebase(totalReps, sessionDuration, exercises) {
+export async function sendRepCountToFirebase(totalReps, totalTickets, sessionDuration, exercises) {
   if (!window.firebaseAuth || !window.firebaseDb) {
     console.log('Firebase not initialized');
     return;
   }
 
-  const { collection, addDoc, serverTimestamp } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+  const { collection, addDoc, serverTimestamp, getDocs, query, where } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
   const user = window.firebaseAuth.currentUser;
 
   if (!user) {
@@ -53,9 +53,11 @@ export async function sendRepCountToFirebase(totalReps, sessionDuration, exercis
   }
 
   try {
+    // Save session data with tickets
     const statsRef = collection(window.firebaseDb, 'users', user.uid, 'sessions');
     await addDoc(statsRef, {
       totalReps,
+      totalTickets,
       sessionDuration,
       exercises,
       timestamp: serverTimestamp(),
@@ -63,7 +65,7 @@ export async function sendRepCountToFirebase(totalReps, sessionDuration, exercis
       userName: user.displayName || user.email,
     });
 
-    // Update user stats totals
+    // Update user stats and leaderboard with tickets
     const userStatsRef = collection(window.firebaseDb, 'leaderboard');
     const userDoc = await getDocs(query(userStatsRef, where('userId', '==', user.uid)));
     
@@ -72,6 +74,7 @@ export async function sendRepCountToFirebase(totalReps, sessionDuration, exercis
         userId: user.uid,
         userName: user.displayName || user.email,
         totalReps: totalReps,
+        totalTickets: totalTickets,
         sessionsCount: 1,
         lastSession: serverTimestamp(),
       });
@@ -80,13 +83,88 @@ export async function sendRepCountToFirebase(totalReps, sessionDuration, exercis
       const { updateDoc, increment } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
       await updateDoc(docRef, {
         totalReps: increment(totalReps),
+        totalTickets: increment(totalTickets),
         sessionsCount: increment(1),
         lastSession: serverTimestamp(),
       });
     }
 
-    console.log('Stats sent to Firebase successfully');
+    console.log('Stats and tickets sent to Firebase successfully');
   } catch (error) {
     console.error('Error sending stats to Firebase:', error);
+  }
+}
+
+// Get user profile with ticket count
+export async function getUserProfile() {
+  if (!window.firebaseAuth || !window.firebaseDb) {
+    return null;
+  }
+
+  const { collection, getDocs, query, where } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+  const user = window.firebaseAuth.currentUser;
+
+  if (!user) {
+    return null;
+  }
+
+  try {
+    const userStatsRef = collection(window.firebaseDb, 'leaderboard');
+    const userDoc = await getDocs(query(userStatsRef, where('userId', '==', user.uid)));
+    
+    if (!userDoc.empty) {
+      return userDoc.docs[0].data();
+    }
+    return null;
+  } catch (error) {
+    console.error('Error fetching user profile:', error);
+    return null;
+  }
+}
+
+// Get leaderboard sorted by tickets
+export async function getLeaderboard(maxResults = 10) {
+  if (!window.firebaseDb) {
+    return [];
+  }
+
+  const { collection, getDocs, query, orderBy, limit } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+
+  try {
+    const leaderboardRef = collection(window.firebaseDb, 'leaderboard');
+    const leaderboardQuery = query(leaderboardRef, orderBy('totalTickets', 'desc'), limit(maxResults));
+    const snapshot = await getDocs(leaderboardQuery);
+    
+    return snapshot.docs.map(doc => ({
+      id: doc.id,
+      ...doc.data()
+    }));
+  } catch (error) {
+    console.error('Error fetching leaderboard:', error);
+    return [];
+  }
+}
+
+// Get total raffle tickets in system
+export async function getTotalRaffleTickets() {
+  if (!window.firebaseDb) {
+    return 0;
+  }
+
+  const { collection, getDocs } = await import('https://www.gstatic.com/firebasejs/10.7.0/firebase-firestore.js');
+
+  try {
+    const leaderboardRef = collection(window.firebaseDb, 'leaderboard');
+    const snapshot = await getDocs(leaderboardRef);
+    
+    let total = 0;
+    snapshot.docs.forEach(doc => {
+      total += doc.data().totalTickets || 0;
+    });
+    
+    return total;
+  } catch (error) {
+    console.error('Error fetching total tickets:', error);
+    return 0;
   }
 }

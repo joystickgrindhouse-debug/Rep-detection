@@ -6,7 +6,7 @@ const CONFIG = {
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
     modelComplexity: 0, 
-    visibilityThreshold: 0.2, // Extremely low threshold to maintain tracking
+    visibilityThreshold: 0.2,
 };
 
 const STATE = {
@@ -18,12 +18,15 @@ const STATE = {
     isGoodForm: true,
     startTime: null, 
     landmarks: null,
-    // Solo Mode State
     isSoloMode: false,
     totalReps: 0,
+    totalTickets: 0,
     currentCard: null,
     sessionStartTime: null,
-    timerInterval: null
+    timerInterval: null,
+    lastExercise: null,
+    plankSeconds: 0,
+    referenceData: {}
 };
 
 const EXERCISES = {
@@ -35,6 +38,31 @@ const EXERCISES = {
 
 const SUIT_NAMES = { '♥': 'Arms', '♠': 'Legs', '♣': 'Core', '♦': 'Cardio' };
 
+// Natural sounding feedback phrases
+const FEEDBACK_PHRASES = {
+    goodRep: [
+        "Nice work!", "That's it!", "Keep it up!", "Great form!", 
+        "Perfect!", "Looking good!", "Solid rep!", "Well done!"
+    ],
+    encouragement: [
+        "You've got this!", "Almost there!", "Stay strong!", 
+        "Keep pushing!", "Don't stop now!", "Power through!"
+    ],
+    targetReached: [
+        "Target complete!", "Awesome job!", "You crushed it!", 
+        "Mission accomplished!", "Excellent work!"
+    ],
+    plankHold: [
+        "Hold steady!", "Stay strong!", "Keep that core tight!", 
+        "You're doing great!", "Breathe and hold!"
+    ]
+};
+
+function getRandomPhrase(category) {
+    const phrases = FEEDBACK_PHRASES[category];
+    return phrases[Math.floor(Math.random() * phrases.length)];
+}
+
 const videoElement = document.getElementsByClassName('input_video')[0];
 const canvasElement = document.getElementsByClassName('output_canvas')[0];
 const canvasCtx = canvasElement.getContext('2d');
@@ -45,10 +73,9 @@ const startBtn = document.getElementById('start-btn');
 const loadingOverlay = document.getElementById('loading-overlay');
 const cameraStatus = document.getElementById('camera-status');
 
-// Solo Mode UI Elements
 const soloStats = document.getElementById('solo-mode-stats');
 const totalRepsDisplay = document.getElementById('total-reps');
-const diceDisplay = document.getElementById('dice-earned');
+const ticketsDisplay = document.getElementById('tickets-earned');
 const timerDisplay = document.getElementById('session-timer');
 const exerciseCard = document.getElementById('exercise-card');
 const cardSuit = document.getElementById('card-suit');
@@ -58,16 +85,60 @@ const cardProgress = document.getElementById('card-progress-bar');
 const cardTarget = document.getElementById('card-target');
 const standardStats = document.getElementById('standard-stats');
 
+// Load reference data for exercises
+async function loadReferenceData() {
+    const exerciseFiles = {
+        'pushups': 'pushups_1769918293693.json',
+        'squats': 'squats_1769918293693.json',
+        'plank': 'plank_1769918293693.json',
+        'lunges': 'lunges_1769918293693.json',
+        'crunches': 'crunches_1769918293693.json',
+        'jumping_jacks': 'jumping_jacks_1769918293693.json',
+        'high_knees': 'high_knees_1769918293693.json',
+        'burpees': 'burpees_1769918293693.json',
+        'mountain_climbers': 'mountain_climbers_1769918293693.json',
+        'russian_twists': 'russian_twists_1769918293692.json',
+        'leg_raises': 'leg_raises_1769918293693.json',
+        'glute_bridges': 'glute_bridges_1769918293693.json',
+        'calf_raises': 'calf_raises_1769918293693.json',
+        'pike_pushups': 'pike_pushups_1769918293693.json',
+        'plank_updowns': 'plank_updowns_1769918293693.json',
+        'shoulder_taps': 'shoulder_taps_1769918293693.json'
+    };
+
+    for (const [exercise, filename] of Object.entries(exerciseFiles)) {
+        try {
+            const response = await fetch(`/exercises/${filename}`);
+            if (response.ok) {
+                STATE.referenceData[exercise] = await response.json();
+            }
+        } catch (error) {
+            console.log(`Could not load reference for ${exercise}`);
+        }
+    }
+    console.log('Reference data loaded:', Object.keys(STATE.referenceData));
+}
+
 function speak(text) {
     const utterance = new SpeechSynthesisUtterance(text);
+    utterance.rate = 1.1;
+    utterance.pitch = 1.0;
     window.speechSynthesis.speak(utterance);
 }
 
+// Improved shuffle - prevents same exercise back-to-back
 function drawNewCard() {
     const suits = Object.keys(EXERCISES);
-    const suit = suits[Math.floor(Math.random() * suits.length)];
-    const exerciseList = EXERCISES[suit];
-    const exercise = exerciseList[Math.floor(Math.random() * exerciseList.length)];
+    let suit, exercise, attempts = 0;
+    
+    do {
+        suit = suits[Math.floor(Math.random() * suits.length)];
+        const exerciseList = EXERCISES[suit];
+        exercise = exerciseList[Math.floor(Math.random() * exerciseList.length)];
+        attempts++;
+    } while (exercise === STATE.lastExercise && attempts < 10);
+    
+    STATE.lastExercise = exercise;
     
     // 2-10, J=11, Q=12, K=13
     const valueNum = Math.floor(Math.random() * 12) + 2;
@@ -76,25 +147,38 @@ function drawNewCard() {
     if (valueNum === 12) valueLabel = 'Q';
     if (valueNum === 13) valueLabel = 'K';
 
+    // For plank, target is seconds instead of reps
+    const isPlank = exercise === 'plank';
+    const targetValue = isPlank ? valueNum * 5 : valueNum;
+
     STATE.currentCard = {
         suit,
         exercise,
-        target: valueNum,
-        label: valueLabel
+        target: targetValue,
+        label: valueLabel,
+        isPlank
     };
 
     STATE.currentExercise = exercise;
     STATE.reps = 0;
+    STATE.plankSeconds = 0;
     engine.reset();
     
-    // Update UI
     cardSuit.innerText = suit;
     cardValue.innerText = valueLabel;
-    cardExName.innerText = exercise.toUpperCase().replace(/([A-Z])/g, ' $1').trim();
-    cardTarget.innerText = valueNum;
+    
+    const displayName = exercise.replace(/([a-z])([A-Z])/g, '$1 $2').toUpperCase();
+    cardExName.innerText = displayName;
+    cardTarget.innerText = isPlank ? `${targetValue}s` : targetValue;
     cardProgress.style.width = '0%';
     
-    speak(STATE.currentCard.exercise);
+    // Natural announcement
+    const exerciseSpoken = exercise.replace(/([a-z])([A-Z])/g, '$1 $2');
+    if (isPlank) {
+        speak(`Next up, ${exerciseSpoken} for ${targetValue} seconds`);
+    } else {
+        speak(`Let's do ${targetValue} ${exerciseSpoken}`);
+    }
 }
 
 function showToast(message) {
@@ -108,18 +192,44 @@ function showToast(message) {
 function updateSoloUI() {
     if (!STATE.isSoloMode) return;
     
-    // Show session total (completed cards) + current card reps
-    const runningTotal = STATE.totalReps + Math.floor(STATE.reps);
-    totalRepsDisplay.innerText = runningTotal;
-    diceDisplay.innerText = Math.floor(runningTotal / 30);
+    const isPlank = STATE.currentCard?.isPlank;
+    let currentProgress, runningTotal;
     
-    const progress = (STATE.reps / STATE.currentCard.target) * 100;
+    if (isPlank) {
+        currentProgress = STATE.plankSeconds;
+        runningTotal = STATE.totalReps + STATE.plankSeconds;
+    } else {
+        currentProgress = Math.floor(STATE.reps);
+        runningTotal = STATE.totalReps + currentProgress;
+    }
+    
+    totalRepsDisplay.innerText = runningTotal;
+    
+    // Calculate tickets: 1 per rep, or 1 per 5 seconds for plank
+    let sessionTickets;
+    if (isPlank) {
+        sessionTickets = STATE.totalTickets + Math.floor(STATE.plankSeconds / 5);
+    } else {
+        sessionTickets = STATE.totalTickets + Math.floor(STATE.reps);
+    }
+    ticketsDisplay.innerText = sessionTickets;
+    
+    const progress = (currentProgress / STATE.currentCard.target) * 100;
     cardProgress.style.width = `${Math.min(progress, 100)}%`;
 
-    if (STATE.reps >= STATE.currentCard.target) {
-        showToast("TARGET REACHED! 💪");
-        speak("Target reached");
-        STATE.totalReps += Math.floor(STATE.reps);
+    if (currentProgress >= STATE.currentCard.target) {
+        const phrase = getRandomPhrase('targetReached');
+        showToast(phrase);
+        speak(phrase);
+        
+        if (isPlank) {
+            STATE.totalReps += STATE.plankSeconds;
+            STATE.totalTickets += Math.floor(STATE.plankSeconds / 5);
+        } else {
+            STATE.totalReps += Math.floor(STATE.reps);
+            STATE.totalTickets += Math.floor(STATE.reps);
+        }
+        
         setTimeout(drawNewCard, 1500);
     }
 }
@@ -157,7 +267,13 @@ function calculateDistance(a, b) {
 }
 
 function updateUI() {
-    if (repDisplay) repDisplay.innerText = Math.floor(STATE.reps);
+    if (repDisplay) {
+        if (STATE.currentCard?.isPlank) {
+            repDisplay.innerText = `${STATE.plankSeconds}s`;
+        } else {
+            repDisplay.innerText = Math.floor(STATE.reps);
+        }
+    }
 }
 
 function updateFeedbackUI() {
@@ -165,7 +281,6 @@ function updateFeedbackUI() {
     stateDisplay.innerText = STATE.movementState;
     messageDisplay.innerText = STATE.lastFeedback;
     
-    // Define good vs bad form based on feedback keywords
     const badFormKeywords = ['lower', 'hips', 'align', 'legs', 'hands', 'view', 'form', 'push up', 'squat down', 'drive up'];
     const lowerFeedback = STATE.lastFeedback.toLowerCase();
     const isBadForm = badFormKeywords.some(keyword => lowerFeedback.includes(keyword));
@@ -173,7 +288,7 @@ function updateFeedbackUI() {
     STATE.isGoodForm = !isBadForm;
 
     const colorMap = {
-        'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88',
+        'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88', 'HOLD': '#00ff88',
         'DOWN': '#ff4444', 'PLANK': '#ff4444', 'CLOSED': '#ff4444'
     };
     stateDisplay.style.color = colorMap[STATE.movementState] || '#ffffff';
@@ -213,21 +328,20 @@ class PushUp extends BaseExercise {
             angle = leftAngle !== -1 ? leftAngle : rightAngle;
         }
 
-        if (angle === -1) return { feedback: 'Align side to camera' };
+        if (angle === -1) return { feedback: 'Position yourself sideways to the camera' };
         
-        // Final broad thresholds for guaranteed detection
-        if (angle > 140) { // Up position (Extension) - Very forgiving
+        if (angle > 140) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
-                return { repIncrement: 1, state: 'UP', feedback: 'Good rep!' };
+                return { repIncrement: 1, state: 'UP', feedback: getRandomPhrase('goodRep') };
             }
-            return { state: 'UP', feedback: 'Go down' };
+            return { state: 'UP', feedback: 'Lower your body down' };
         } 
-        if (angle < 110) { // Down position (Compression) - Very forgiving
+        if (angle < 110) {
             this.state = 'DOWN';
-            return { state: 'DOWN', feedback: 'Push up!' };
+            return { state: 'DOWN', feedback: 'Now push back up' };
         }
-        return { state: this.state, feedback: 'Keep going' };
+        return { state: this.state, feedback: getRandomPhrase('encouragement') };
     }
 }
 
@@ -250,40 +364,47 @@ class Squats extends BaseExercise {
             angle = leftAngle !== -1 ? leftAngle : rightAngle;
         }
 
-        if (angle === -1) return { feedback: 'Legs out of view' };
+        if (angle === -1) return { feedback: 'Make sure your legs are visible' };
         if (angle > 145) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
-                return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
+                return { repIncrement: 1, state: 'UP', feedback: getRandomPhrase('goodRep') };
             }
-            return { state: 'UP', feedback: 'Squat down' };
+            return { state: 'UP', feedback: 'Bend your knees and sit back' };
         }
         if (angle < 110) {
             this.state = 'DOWN';
-            this.state = 'DOWN';
-            return { state: 'DOWN', feedback: 'Drive up!' };
+            return { state: 'DOWN', feedback: 'Stand back up strong' };
         }
-        return { state: this.state, feedback: 'Lower' };
+        return { state: this.state, feedback: 'Go a bit lower' };
     }
 }
 
 class Plank extends BaseExercise {
-    constructor() { super(); this.startTime = null; }
-    reset() { this.startTime = null; }
+    constructor() { super(); this.startTime = null; this.lastTicketSecond = 0; }
+    reset() { this.startTime = null; this.lastTicketSecond = 0; }
     update(landmarks) {
         const shoulder = this.get(landmarks, 11);
         const hip = this.get(landmarks, 23);
         const ankle = this.get(landmarks, 27);
         const hipAngle = calculateAngle(shoulder, hip, ankle);
-        if (hipAngle === -1) return { feedback: 'Body out of view' };
+        if (hipAngle === -1) return { feedback: 'Show your full body to the camera' };
         if (hipAngle > 165) {
             if (!this.startTime) this.startTime = Date.now();
             const seconds = Math.floor((Date.now() - this.startTime) / 1000);
-            STATE.reps = seconds;
-            return { state: 'HOLD', feedback: 'Hold it!' };
+            STATE.plankSeconds = seconds;
+            updateUI();
+            
+            // Announce every 5 seconds with natural feedback
+            if (seconds > 0 && seconds % 5 === 0 && seconds !== this.lastTicketSecond) {
+                this.lastTicketSecond = seconds;
+                speak(`${seconds} seconds`);
+            }
+            
+            return { state: 'HOLD', feedback: getRandomPhrase('plankHold') };
         } else {
             this.startTime = null;
-            return { state: 'FORM', feedback: 'Lower hips' };
+            return { state: 'FORM', feedback: 'Keep your body in a straight line' };
         }
     }
 }
@@ -296,22 +417,22 @@ class JumpingJacks extends BaseExercise {
         const rightAnkle = this.get(landmarks, 28);
         const nose = this.get(landmarks, 0);
         if (leftHand.visibility < CONFIG.visibilityThreshold || rightHand.visibility < CONFIG.visibilityThreshold) {
-            return { feedback: 'Hands in view' };
+            return { feedback: 'Keep your hands in view' };
         }
         const handsUp = leftHand.y < nose.y && rightHand.y < nose.y;
         const feetWide = calculateDistance(leftAnkle, rightAnkle) > 0.4;
         if (handsUp && feetWide) {
             this.state = 'UP';
-            return { state: 'OPEN', feedback: 'Back in' };
+            return { state: 'OPEN', feedback: 'Bring it back in' };
         }
         if (!handsUp && !feetWide) {
             if (this.state === 'UP') {
                 this.state = 'DOWN';
-                return { repIncrement: 1, state: 'CLOSED', feedback: 'Nice!' };
+                return { repIncrement: 1, state: 'CLOSED', feedback: getRandomPhrase('goodRep') };
             }
-            return { state: 'DOWN', feedback: 'Jump!' };
+            return { state: 'DOWN', feedback: 'Jump and spread wide' };
         }
-        return { state: this.state, feedback: 'Keep jumping' };
+        return { state: this.state, feedback: 'Keep the rhythm going' };
     }
 }
 
@@ -319,18 +440,18 @@ class Lunge extends BaseExercise {
     update(landmarks) {
         const lKnee = calculateAngle(this.get(landmarks, 23), this.get(landmarks, 25), this.get(landmarks, 27));
         const rKnee = calculateAngle(this.get(landmarks, 24), this.get(landmarks, 26), this.get(landmarks, 28));
-        if (lKnee === -1 || rKnee === -1) return { feedback: 'Show legs' };
+        if (lKnee === -1 || rKnee === -1) return { feedback: 'Make sure your legs are visible' };
         if (lKnee < 115 || rKnee < 115) {
             this.state = 'DOWN';
-            return { state: 'DOWN', feedback: 'Up' };
+            return { state: 'DOWN', feedback: 'Now stand back up' };
         }
         if (lKnee > 145 && rKnee > 145) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
-                return { repIncrement: 1, state: 'UP', feedback: 'Good!' };
+                return { repIncrement: 1, state: 'UP', feedback: getRandomPhrase('goodRep') };
             }
         }
-        return { state: this.state, feedback: 'Lunge' };
+        return { state: this.state, feedback: 'Step forward and lower down' };
     }
 }
 
@@ -339,18 +460,18 @@ class Crunches extends BaseExercise {
         const shoulder = this.get(landmarks, 11);
         const knee = this.get(landmarks, 25);
         const hip = this.get(landmarks, 23);
-        if (shoulder.visibility < CONFIG.visibilityThreshold) return { feedback: 'Torso in view' };
+        if (shoulder.visibility < CONFIG.visibilityThreshold) return { feedback: 'Keep your upper body visible' };
         const dist = calculateDistance(shoulder, knee);
         const ref = calculateDistance(hip, knee);
         if (dist < ref * 1.3) {
             this.state = 'IN';
-            return { state: 'CRUNCH', feedback: 'Down' };
+            return { state: 'CRUNCH', feedback: 'Now lower back down' };
         }
         if (dist > ref * 1.5 && this.state === 'IN') {
             this.state = 'OUT';
-            return { repIncrement: 1, state: 'OUT', feedback: 'Crunch!' };
+            return { repIncrement: 1, state: 'OUT', feedback: getRandomPhrase('goodRep') };
         }
-        return { state: this.state, feedback: 'Crunch' };
+        return { state: this.state, feedback: 'Curl up towards your knees' };
     }
 }
 
@@ -365,13 +486,13 @@ class HighKnees extends BaseExercise {
         const rUp = rKnee.visibility > CONFIG.visibilityThreshold && rKnee.y < rHip.y - 0.08;
         if (lUp && this.lastLeg !== 'left') {
             this.lastLeg = 'left';
-            return { repIncrement: 0.5, state: 'LEFT', feedback: 'Next!' };
+            return { repIncrement: 0.5, state: 'LEFT', feedback: 'Switch!' };
         }
         if (rUp && this.lastLeg !== 'right') {
             this.lastLeg = 'right';
-            return { repIncrement: 0.5, state: 'RIGHT', feedback: 'Next!' };
+            return { repIncrement: 0.5, state: 'RIGHT', feedback: 'Switch!' };
         }
-        return { state: 'RUN', feedback: 'Knees high' };
+        return { state: 'RUN', feedback: 'Drive those knees up high' };
     }
 }
 
@@ -385,13 +506,13 @@ class Burpees extends BaseExercise {
         const isVertical = shoulder.y < this.get(landmarks, 23).y && Math.abs(shoulder.x - ankle.x) < 0.25;
         if (isHorizontal && this.step === 0) {
             this.step = 1;
-            return { state: 'PLANK', feedback: 'Up!' };
+            return { state: 'PLANK', feedback: 'Now jump up!' };
         }
         if (isVertical && this.step === 1) {
             this.step = 0;
-            return { repIncrement: 1, state: 'STAND', feedback: 'Down!' };
+            return { repIncrement: 1, state: 'STAND', feedback: getRandomPhrase('goodRep') };
         }
-        return { state: this.step === 1 ? 'PLANK' : 'STAND', feedback: 'Move!' };
+        return { state: this.step === 1 ? 'PLANK' : 'STAND', feedback: 'Drop down and jump back up' };
     }
 }
 
@@ -405,10 +526,10 @@ class ShoulderTap extends BaseExercise {
         const rTap = calculateDistance(rWrist, lShoulder) < 0.25;
         if ((lTap || rTap) && this.state !== 'TAP') {
             this.state = 'TAP';
-            return { repIncrement: 0.5, feedback: 'Tap!' };
+            return { repIncrement: 0.5, feedback: getRandomPhrase('goodRep') };
         }
         if (!lTap && !rTap) this.state = 'IDLE';
-        return { feedback: 'Tap shoulders' };
+        return { feedback: 'Reach across and tap your shoulder' };
     }
 }
 
@@ -418,13 +539,13 @@ class CalfRaise extends BaseExercise {
         if (!this.baseY) this.baseY = ankle.y;
         if (ankle.y < this.baseY - 0.03) {
             this.state = 'UP';
-            return { state: 'UP', feedback: 'Down' };
+            return { state: 'UP', feedback: 'Lower back down' };
         }
         if (this.state === 'UP' && ankle.y > this.baseY - 0.01) {
             this.state = 'DOWN';
-            return { repIncrement: 1, state: 'DOWN', feedback: 'Up' };
+            return { repIncrement: 1, state: 'DOWN', feedback: getRandomPhrase('goodRep') };
         }
-        return { feedback: 'Rise' };
+        return { feedback: 'Rise up on your toes' };
     }
 }
 
@@ -434,13 +555,13 @@ class RussianTwists extends BaseExercise {
         const rShoulder = this.get(landmarks, 12);
         if (lShoulder.x > rShoulder.x + 0.05 && this.state !== 'LEFT') {
             this.state = 'LEFT';
-            return { repIncrement: 0.5, feedback: 'Right' };
+            return { repIncrement: 0.5, feedback: 'Now twist right' };
         }
         if (rShoulder.x > lShoulder.x + 0.05 && this.state !== 'RIGHT') {
             this.state = 'RIGHT';
-            return { repIncrement: 0.5, feedback: 'Left' };
+            return { repIncrement: 0.5, feedback: 'Now twist left' };
         }
-        return { feedback: 'Twist' };
+        return { feedback: 'Rotate your torso side to side' };
     }
 }
 
@@ -469,12 +590,20 @@ class ExerciseEngine {
         const exercise = this.exercises[STATE.currentExercise];
         if (!exercise) return;
         const result = exercise.update(landmarks);
-        if (result.repIncrement) {
+        
+        // For plank, don't increment reps - it's timer based
+        if (STATE.currentCard?.isPlank) {
+            updateSoloUI();
+        } else if (result.repIncrement) {
             STATE.reps += result.repIncrement;
             updateUI();
             if (STATE.isSoloMode) {
                 updateSoloUI();
-                speak(Math.floor(STATE.reps).toString());
+                // Announce rep count naturally
+                const repCount = Math.floor(STATE.reps);
+                if (repCount > 0 && repCount === Math.floor(STATE.reps)) {
+                    speak(repCount.toString());
+                }
             }
         }
         STATE.movementState = result.state || STATE.movementState;
@@ -483,6 +612,7 @@ class ExerciseEngine {
     }
     reset() {
         STATE.reps = 0;
+        STATE.plankSeconds = 0;
         STATE.movementState = 'IDLE';
         STATE.lastFeedback = 'Get Ready';
         updateUI();
@@ -521,12 +651,13 @@ startBtn.addEventListener('click', () => {
 function startCamera() {
     loadingOverlay.classList.remove('hidden');
     
-    // Auto-enable Solo Mode
     STATE.isSoloMode = true;
     soloStats.classList.remove('hidden');
     exerciseCard.classList.remove('hidden');
     standardStats.classList.add('hidden');
     STATE.totalReps = 0;
+    STATE.totalTickets = 0;
+    STATE.lastExercise = null;
     startTimer();
     drawNewCard();
 
@@ -554,11 +685,11 @@ async function stopCamera() {
     cameraStatus.classList.remove('active');
     startBtn.innerText = "RUN SESSION";
     
-    // Send stats to Firebase before reset
+    // Send stats to Firebase including tickets
     try {
         const { sendRepCountToFirebase } = await import('./firebase-service.js');
         const sessionDuration = Date.now() - STATE.sessionStartTime;
-        await sendRepCountToFirebase(STATE.totalReps, sessionDuration, STATE.currentExercise);
+        await sendRepCountToFirebase(STATE.totalReps, STATE.totalTickets, sessionDuration, STATE.currentExercise);
     } catch (error) {
         console.error('Error sending stats:', error);
     }
@@ -582,15 +713,24 @@ function onResults(results) {
     if (results.poseLandmarks) {
         engine.process(results.poseLandmarks);
 
+        // Draw skeleton overlay
         const connections = [
             [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], 
             [11, 23], [12, 24], [23, 24], 
-            [23, 25], [25, 27], [24, 26], [26, 28]
+            [23, 25], [25, 27], [24, 26], [26, 28],
+            [27, 29], [29, 31], [28, 30], [30, 32], // Feet
+            [15, 17], [15, 19], [15, 21], [16, 18], [16, 20], [16, 22], // Hands
+            [0, 1], [1, 2], [2, 3], [3, 7], [0, 4], [4, 5], [5, 6], [6, 8], // Face
+            [9, 10], [11, 12] // Shoulders
         ];
 
         const skeletonColor = STATE.isGoodForm ? '#00ff88' : '#ff4444';
+        
+        // Draw glow effect for skeleton
+        canvasCtx.shadowColor = skeletonColor;
+        canvasCtx.shadowBlur = 10;
         canvasCtx.strokeStyle = skeletonColor;
-        canvasCtx.lineWidth = 3;
+        canvasCtx.lineWidth = 4;
         canvasCtx.lineCap = 'round';
         canvasCtx.lineJoin = 'round';
         
@@ -605,16 +745,32 @@ function onResults(results) {
         });
         canvasCtx.stroke();
         
-        drawLandmarks(canvasCtx, results.poseLandmarks, {
-            color: '#ffffff', 
-            fillColor: skeletonColor,
-            lineWidth: 1,
-            radius: 2
+        // Reset shadow for landmarks
+        canvasCtx.shadowBlur = 0;
+        
+        // Draw landmarks with larger, more visible circles
+        results.poseLandmarks.forEach((landmark, index) => {
+            if (landmark.visibility > 0.1) {
+                canvasCtx.beginPath();
+                canvasCtx.arc(
+                    landmark.x * canvasElement.width, 
+                    landmark.y * canvasElement.height, 
+                    6, 0, 2 * Math.PI
+                );
+                canvasCtx.fillStyle = skeletonColor;
+                canvasCtx.fill();
+                canvasCtx.strokeStyle = '#ffffff';
+                canvasCtx.lineWidth = 2;
+                canvasCtx.stroke();
+            }
         });
     }
     
     canvasCtx.restore();
 }
 
-loadingOverlay.classList.add('hidden');
-console.log("AI Rep Counter Pro Ready");
+// Initialize reference data and app
+loadReferenceData().then(() => {
+    loadingOverlay.classList.add('hidden');
+    console.log("AI Rep Counter Pro Ready");
+});
