@@ -1,0 +1,4113 @@
+{
+  "v": 1,
+  "exercise": "glute_bridges",
+  "fps": 10,
+  "maxSec": 60,
+  "modelComplexity": 1,
+  "minDetectionConfidence": 0.8,
+  "minTrackingConfidence": 0.8,
+  "angles_scale": 100,
+  "dists_scale": 1000,
+  "frames": [
+    {
+      "t": 0.1,
+      "aQ": [
+        284,
+        null,
+        111,
+        null,
+        81,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2969,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.2,
+      "aQ": [
+        295,
+        null,
+        104,
+        null,
+        85,
+        null,
+        300,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2945,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.3,
+      "aQ": [
+        298,
+        null,
+        104,
+        null,
+        85,
+        null,
+        301,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2912,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.4,
+      "aQ": [
+        299,
+        null,
+        102,
+        null,
+        86,
+        null,
+        302,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2809,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.5,
+      "aQ": [
+        300,
+        null,
+        102,
+        null,
+        86,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2783,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.6,
+      "aQ": [
+        300,
+        null,
+        101,
+        null,
+        86,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        603,
+        2783,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 0.7,
+      "aQ": [
+        300,
+        null,
+        101,
+        null,
+        87,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        617,
+        2751,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 0.8,
+      "aQ": [
+        300,
+        null,
+        101,
+        null,
+        86,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        617,
+        2743,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 0.9,
+      "aQ": [
+        300,
+        null,
+        100,
+        null,
+        86,
+        null,
+        301,
+        null
+      ],
+      "dQ": [
+        null,
+        612,
+        2680,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 1,
+      "aQ": [
+        301,
+        null,
+        99,
+        null,
+        85,
+        null,
+        300,
+        null
+      ],
+      "dQ": [
+        null,
+        611,
+        2660,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 1.1,
+      "aQ": [
+        302,
+        null,
+        99,
+        null,
+        85,
+        null,
+        299,
+        null
+      ],
+      "dQ": [
+        null,
+        614,
+        2657,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 1.2,
+      "aQ": [
+        302,
+        null,
+        98,
+        null,
+        85,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        619,
+        2662,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 1.3,
+      "aQ": [
+        302,
+        null,
+        98,
+        null,
+        85,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        623,
+        2688,
+        null
+      ],
+      "visQ": 83
+    },
+    {
+      "t": 1.4,
+      "aQ": [
+        301,
+        null,
+        98,
+        null,
+        84,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        619,
+        2682,
+        null
+      ],
+      "visQ": 83
+    },
+    {
+      "t": 1.5,
+      "aQ": [
+        300,
+        null,
+        98,
+        null,
+        84,
+        null,
+        297,
+        null
+      ],
+      "dQ": [
+        null,
+        616,
+        2689,
+        null
+      ],
+      "visQ": 83
+    },
+    {
+      "t": 1.6,
+      "aQ": [
+        300,
+        null,
+        97,
+        null,
+        83,
+        null,
+        295,
+        null
+      ],
+      "dQ": [
+        null,
+        617,
+        2659,
+        null
+      ],
+      "visQ": 83
+    },
+    {
+      "t": 1.7,
+      "aQ": [
+        299,
+        null,
+        97,
+        null,
+        83,
+        null,
+        295,
+        null
+      ],
+      "dQ": [
+        null,
+        596,
+        2663,
+        null
+      ],
+      "visQ": 83
+    },
+    {
+      "t": 1.8,
+      "aQ": [
+        299,
+        null,
+        97,
+        null,
+        82,
+        null,
+        294,
+        null
+      ],
+      "dQ": [
+        null,
+        593,
+        2657,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 1.9,
+      "aQ": [
+        300,
+        null,
+        97,
+        null,
+        82,
+        null,
+        294,
+        null
+      ],
+      "dQ": [
+        null,
+        603,
+        2656,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 2,
+      "aQ": [
+        300,
+        null,
+        97,
+        null,
+        81,
+        null,
+        293,
+        null
+      ],
+      "dQ": [
+        null,
+        604,
+        2648,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 2.1,
+      "aQ": [
+        298,
+        null,
+        97,
+        null,
+        81,
+        null,
+        291,
+        null
+      ],
+      "dQ": [
+        null,
+        518,
+        2617,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 2.2,
+      "aQ": [
+        297,
+        null,
+        98,
+        null,
+        81,
+        null,
+        290,
+        null
+      ],
+      "dQ": [
+        null,
+        533,
+        2606,
+        null
+      ],
+      "visQ": 82
+    },
+    {
+      "t": 2.3,
+      "aQ": [
+        297,
+        null,
+        99,
+        null,
+        82,
+        null,
+        289,
+        null
+      ],
+      "dQ": [
+        null,
+        583,
+        2665,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 2.4,
+      "aQ": [
+        294,
+        null,
+        101,
+        null,
+        81,
+        null,
+        289,
+        null
+      ],
+      "dQ": [
+        null,
+        594,
+        2719,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 2.5,
+      "aQ": [
+        292,
+        null,
+        102,
+        null,
+        81,
+        null,
+        288,
+        null
+      ],
+      "dQ": [
+        null,
+        597,
+        2743,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 2.6,
+      "aQ": [
+        290,
+        null,
+        103,
+        null,
+        81,
+        null,
+        287,
+        null
+      ],
+      "dQ": [
+        null,
+        598,
+        2748,
+        null
+      ],
+      "visQ": 81
+    },
+    {
+      "t": 2.7,
+      "aQ": [
+        288,
+        null,
+        103,
+        null,
+        80,
+        null,
+        287,
+        null
+      ],
+      "dQ": [
+        null,
+        577,
+        2736,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 2.8,
+      "aQ": [
+        288,
+        null,
+        103,
+        null,
+        79,
+        null,
+        286,
+        null
+      ],
+      "dQ": [
+        null,
+        572,
+        2715,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 2.9,
+      "aQ": [
+        288,
+        null,
+        102,
+        null,
+        79,
+        null,
+        285,
+        null
+      ],
+      "dQ": [
+        null,
+        546,
+        2690,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 3,
+      "aQ": [
+        288,
+        null,
+        102,
+        null,
+        79,
+        null,
+        285,
+        null
+      ],
+      "dQ": [
+        null,
+        541,
+        2687,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 3.1,
+      "aQ": [
+        288,
+        null,
+        102,
+        null,
+        79,
+        null,
+        284,
+        null
+      ],
+      "dQ": [
+        null,
+        562,
+        2682,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.2,
+      "aQ": [
+        288,
+        null,
+        102,
+        null,
+        78,
+        null,
+        284,
+        null
+      ],
+      "dQ": [
+        null,
+        578,
+        2715,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.3,
+      "aQ": [
+        287,
+        null,
+        102,
+        null,
+        78,
+        null,
+        283,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2734,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.4,
+      "aQ": [
+        287,
+        null,
+        101,
+        null,
+        78,
+        null,
+        282,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2699,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.5,
+      "aQ": [
+        289,
+        null,
+        99,
+        null,
+        76,
+        null,
+        279,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2629,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.6,
+      "aQ": [
+        287,
+        null,
+        100,
+        null,
+        76,
+        null,
+        278,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2607,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.7,
+      "aQ": [
+        287,
+        null,
+        100,
+        null,
+        75,
+        null,
+        278,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2591,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.8,
+      "aQ": [
+        287,
+        null,
+        100,
+        null,
+        75,
+        null,
+        277,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2569,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 3.9,
+      "aQ": [
+        287,
+        null,
+        99,
+        null,
+        74,
+        null,
+        275,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2526,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4,
+      "aQ": [
+        287,
+        null,
+        98,
+        null,
+        73,
+        null,
+        274,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2516,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.1,
+      "aQ": [
+        289,
+        null,
+        96,
+        null,
+        72,
+        null,
+        273,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2538,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.2,
+      "aQ": [
+        289,
+        null,
+        96,
+        null,
+        72,
+        null,
+        272,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2513,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.3,
+      "aQ": [
+        290,
+        null,
+        95,
+        null,
+        71,
+        null,
+        271,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2517,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.4,
+      "aQ": [
+        290,
+        null,
+        95,
+        null,
+        70,
+        null,
+        270,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2504,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.5,
+      "aQ": [
+        289,
+        null,
+        95,
+        null,
+        70,
+        null,
+        269,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2498,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.6,
+      "aQ": [
+        289,
+        null,
+        94,
+        null,
+        69,
+        null,
+        268,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2453,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.7,
+      "aQ": [
+        289,
+        null,
+        93,
+        null,
+        69,
+        null,
+        268,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2458,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.8,
+      "aQ": [
+        290,
+        null,
+        93,
+        null,
+        69,
+        null,
+        268,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2490,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 4.9,
+      "aQ": [
+        291,
+        null,
+        92,
+        null,
+        68,
+        null,
+        266,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2457,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5,
+      "aQ": [
+        289,
+        null,
+        91,
+        null,
+        67,
+        null,
+        265,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2387,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5.1,
+      "aQ": [
+        292,
+        null,
+        87,
+        null,
+        67,
+        null,
+        264,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2262,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5.2,
+      "aQ": [
+        294,
+        null,
+        84,
+        null,
+        66,
+        null,
+        262,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2198,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5.3,
+      "aQ": [
+        293,
+        null,
+        83,
+        null,
+        66,
+        null,
+        260,
+        null
+      ],
+      "dQ": [
+        null,
+        902,
+        2122,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5.4,
+      "aQ": [
+        294,
+        null,
+        83,
+        null,
+        67,
+        null,
+        260,
+        null
+      ],
+      "dQ": [
+        null,
+        883,
+        2074,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 5.5,
+      "aQ": [
+        296,
+        null,
+        82,
+        null,
+        66,
+        null,
+        259,
+        null
+      ],
+      "dQ": [
+        null,
+        868,
+        2055,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 5.6,
+      "aQ": [
+        297,
+        null,
+        80,
+        null,
+        65,
+        null,
+        257,
+        null
+      ],
+      "dQ": [
+        null,
+        916,
+        2048,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 5.7,
+      "aQ": [
+        297,
+        null,
+        80,
+        null,
+        64,
+        null,
+        256,
+        null
+      ],
+      "dQ": [
+        null,
+        928,
+        2040,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 5.8,
+      "aQ": [
+        295,
+        null,
+        80,
+        null,
+        64,
+        null,
+        255,
+        null
+      ],
+      "dQ": [
+        null,
+        948,
+        2008,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 5.9,
+      "aQ": [
+        295,
+        null,
+        80,
+        null,
+        63,
+        null,
+        254,
+        null
+      ],
+      "dQ": [
+        null,
+        947,
+        1970,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6,
+      "aQ": [
+        293,
+        null,
+        79,
+        null,
+        63,
+        null,
+        253,
+        null
+      ],
+      "dQ": [
+        null,
+        937,
+        1935,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.1,
+      "aQ": [
+        291,
+        null,
+        78,
+        null,
+        63,
+        null,
+        251,
+        null
+      ],
+      "dQ": [
+        null,
+        958,
+        1881,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.2,
+      "aQ": [
+        292,
+        null,
+        78,
+        null,
+        63,
+        null,
+        251,
+        null
+      ],
+      "dQ": [
+        null,
+        944,
+        1888,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.3,
+      "aQ": [
+        292,
+        null,
+        78,
+        null,
+        63,
+        null,
+        251,
+        null
+      ],
+      "dQ": [
+        null,
+        938,
+        1885,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.4,
+      "aQ": [
+        292,
+        null,
+        77,
+        null,
+        63,
+        null,
+        249,
+        null
+      ],
+      "dQ": [
+        null,
+        937,
+        1835,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.5,
+      "aQ": [
+        292,
+        null,
+        77,
+        null,
+        62,
+        null,
+        248,
+        null
+      ],
+      "dQ": [
+        null,
+        966,
+        1802,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.6,
+      "aQ": [
+        292,
+        null,
+        76,
+        null,
+        62,
+        null,
+        248,
+        null
+      ],
+      "dQ": [
+        null,
+        978,
+        1782,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.7,
+      "aQ": [
+        291,
+        null,
+        76,
+        null,
+        62,
+        null,
+        247,
+        null
+      ],
+      "dQ": [
+        null,
+        993,
+        1788,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.8,
+      "aQ": [
+        288,
+        null,
+        76,
+        null,
+        62,
+        null,
+        246,
+        null
+      ],
+      "dQ": [
+        null,
+        973,
+        1743,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 6.9,
+      "aQ": [
+        288,
+        null,
+        75,
+        null,
+        62,
+        null,
+        246,
+        null
+      ],
+      "dQ": [
+        null,
+        966,
+        1719,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7,
+      "aQ": [
+        290,
+        null,
+        75,
+        null,
+        62,
+        null,
+        245,
+        null
+      ],
+      "dQ": [
+        null,
+        958,
+        1720,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.1,
+      "aQ": [
+        291,
+        null,
+        74,
+        null,
+        61,
+        null,
+        244,
+        null
+      ],
+      "dQ": [
+        null,
+        947,
+        1704,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.2,
+      "aQ": [
+        291,
+        null,
+        74,
+        null,
+        61,
+        null,
+        242,
+        null
+      ],
+      "dQ": [
+        null,
+        958,
+        1712,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.3,
+      "aQ": [
+        288,
+        null,
+        75,
+        null,
+        60,
+        null,
+        241,
+        null
+      ],
+      "dQ": [
+        null,
+        919,
+        1694,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.4,
+      "aQ": [
+        284,
+        null,
+        76,
+        null,
+        60,
+        null,
+        239,
+        null
+      ],
+      "dQ": [
+        null,
+        972,
+        1652,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.5,
+      "aQ": [
+        284,
+        null,
+        76,
+        null,
+        59,
+        null,
+        238,
+        null
+      ],
+      "dQ": [
+        null,
+        992,
+        1655,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.6,
+      "aQ": [
+        284,
+        null,
+        75,
+        null,
+        59,
+        null,
+        236,
+        null
+      ],
+      "dQ": [
+        null,
+        1004,
+        1618,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.7,
+      "aQ": [
+        282,
+        null,
+        75,
+        null,
+        58,
+        null,
+        235,
+        null
+      ],
+      "dQ": [
+        null,
+        978,
+        1601,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.8,
+      "aQ": [
+        281,
+        null,
+        74,
+        null,
+        58,
+        null,
+        233,
+        null
+      ],
+      "dQ": [
+        null,
+        975,
+        1570,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 7.9,
+      "aQ": [
+        282,
+        null,
+        73,
+        null,
+        57,
+        null,
+        232,
+        null
+      ],
+      "dQ": [
+        null,
+        968,
+        1553,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 8,
+      "aQ": [
+        283,
+        null,
+        72,
+        null,
+        57,
+        null,
+        230,
+        null
+      ],
+      "dQ": [
+        null,
+        979,
+        1547,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 8.1,
+      "aQ": [
+        282,
+        null,
+        73,
+        null,
+        57,
+        null,
+        229,
+        null
+      ],
+      "dQ": [
+        null,
+        992,
+        1561,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 8.2,
+      "aQ": [
+        282,
+        null,
+        72,
+        null,
+        57,
+        null,
+        228,
+        null
+      ],
+      "dQ": [
+        null,
+        980,
+        1562,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 8.3,
+      "aQ": [
+        281,
+        null,
+        72,
+        null,
+        57,
+        null,
+        227,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1603,
+        null
+      ],
+      "visQ": 80
+    },
+    {
+      "t": 8.4,
+      "aQ": [
+        282,
+        null,
+        71,
+        null,
+        57,
+        null,
+        225,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1612,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 8.5,
+      "aQ": [
+        282,
+        null,
+        69,
+        null,
+        56,
+        null,
+        222,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1574,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 8.6,
+      "aQ": [
+        282,
+        null,
+        69,
+        null,
+        56,
+        null,
+        221,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1550,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 8.7,
+      "aQ": [
+        283,
+        null,
+        67,
+        null,
+        56,
+        null,
+        220,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1506,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 8.8,
+      "aQ": [
+        282,
+        null,
+        67,
+        null,
+        56,
+        null,
+        219,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1492,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 8.9,
+      "aQ": [
+        282,
+        null,
+        67,
+        null,
+        56,
+        null,
+        219,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1483,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9,
+      "aQ": [
+        282,
+        null,
+        67,
+        null,
+        57,
+        null,
+        219,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1483,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.1,
+      "aQ": [
+        282,
+        null,
+        66,
+        null,
+        56,
+        null,
+        217,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1464,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.2,
+      "aQ": [
+        283,
+        null,
+        65,
+        null,
+        56,
+        null,
+        218,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1436,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.3,
+      "aQ": [
+        283,
+        null,
+        65,
+        null,
+        56,
+        null,
+        218,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1420,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.4,
+      "aQ": [
+        283,
+        null,
+        65,
+        null,
+        55,
+        null,
+        217,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1406,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.5,
+      "aQ": [
+        282,
+        null,
+        65,
+        null,
+        55,
+        null,
+        217,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1397,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.6,
+      "aQ": [
+        282,
+        null,
+        65,
+        null,
+        55,
+        null,
+        216,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1396,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.7,
+      "aQ": [
+        281,
+        null,
+        65,
+        null,
+        54,
+        null,
+        215,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1403,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.8,
+      "aQ": [
+        281,
+        null,
+        65,
+        null,
+        54,
+        null,
+        214,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1407,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 9.9,
+      "aQ": [
+        280,
+        null,
+        65,
+        null,
+        54,
+        null,
+        213,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1406,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 10,
+      "aQ": [
+        280,
+        null,
+        65,
+        null,
+        54,
+        null,
+        213,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1404,
+        null
+      ],
+      "visQ": 79
+    },
+    {
+      "t": 10.1,
+      "aQ": [
+        279,
+        null,
+        65,
+        null,
+        54,
+        null,
+        212,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1401,
+        null
+      ],
+      "visQ": 78
+    },
+    {
+      "t": 10.2,
+      "aQ": [
+        279,
+        null,
+        65,
+        null,
+        54,
+        null,
+        212,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        1400,
+        null
+      ],
+      "visQ": 78
+    },
+    {
+      "t": 10.3,
+      "aQ": [
+        288,
+        null,
+        82,
+        null,
+        57,
+        null,
+        216,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        6065,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 10.4,
+      "aQ": [
+        289,
+        null,
+        72,
+        null,
+        65,
+        null,
+        226,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2162,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 10.5,
+      "aQ": [
+        290,
+        null,
+        67,
+        null,
+        62,
+        null,
+        218,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2095,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 10.6,
+      "aQ": [
+        293,
+        null,
+        67,
+        null,
+        62,
+        null,
+        217,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2128,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 10.7,
+      "aQ": [
+        293,
+        null,
+        70,
+        null,
+        62,
+        null,
+        218,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2238,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 10.8,
+      "aQ": [
+        294,
+        null,
+        72,
+        null,
+        62,
+        null,
+        223,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2318,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 10.9,
+      "aQ": [
+        295,
+        null,
+        74,
+        null,
+        63,
+        null,
+        226,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2345,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11,
+      "aQ": [
+        303,
+        null,
+        70,
+        null,
+        64,
+        null,
+        228,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2467,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.1,
+      "aQ": [
+        307,
+        null,
+        70,
+        null,
+        62,
+        null,
+        229,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2653,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.2,
+      "aQ": [
+        287,
+        null,
+        83,
+        null,
+        63,
+        null,
+        234,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2926,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.3,
+      "aQ": [
+        295,
+        null,
+        80,
+        null,
+        63,
+        null,
+        238,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2824,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.4,
+      "aQ": [
+        297,
+        null,
+        80,
+        null,
+        64,
+        null,
+        241,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2778,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.5,
+      "aQ": [
+        297,
+        null,
+        84,
+        null,
+        64,
+        null,
+        245,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3065,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.6,
+      "aQ": [
+        295,
+        null,
+        86,
+        null,
+        65,
+        null,
+        247,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3052,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.7,
+      "aQ": [
+        287,
+        null,
+        94,
+        null,
+        68,
+        null,
+        254,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3289,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.8,
+      "aQ": [
+        289,
+        null,
+        98,
+        null,
+        70,
+        null,
+        260,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3233,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 11.9,
+      "aQ": [
+        294,
+        null,
+        96,
+        null,
+        70,
+        null,
+        266,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3018,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12,
+      "aQ": [
+        292,
+        null,
+        99,
+        null,
+        72,
+        null,
+        270,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2909,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12.1,
+      "aQ": [
+        290,
+        null,
+        102,
+        null,
+        71,
+        null,
+        274,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2873,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12.2,
+      "aQ": [
+        287,
+        null,
+        104,
+        null,
+        73,
+        null,
+        278,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2682,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12.3,
+      "aQ": [
+        286,
+        null,
+        106,
+        null,
+        74,
+        null,
+        280,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2639,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12.4,
+      "aQ": [
+        300,
+        null,
+        99,
+        null,
+        72,
+        null,
+        280,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        2437,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 12.5,
+      "aQ": [
+        313,
+        null,
+        104,
+        null,
+        72,
+        null,
+        276,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        3058,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 12.6,
+      "aQ": [
+        307,
+        null,
+        93,
+        null,
+        76,
+        null,
+        275,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        5948,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 12.7,
+      "aQ": [
+        308,
+        null,
+        92,
+        null,
+        78,
+        null,
+        276,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        6705,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 12.8,
+      "aQ": [
+        311,
+        null,
+        94,
+        null,
+        79,
+        null,
+        279,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        7949,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 12.9,
+      "aQ": [
+        299,
+        null,
+        114,
+        null,
+        80,
+        null,
+        280,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        7864,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13,
+      "aQ": [
+        202,
+        null,
+        133,
+        null,
+        83,
+        null,
+        286,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        12243,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.1,
+      "aQ": [
+        227,
+        null,
+        142,
+        null,
+        80,
+        null,
+        287,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        8411,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.2,
+      "aQ": [
+        295,
+        null,
+        97,
+        null,
+        82,
+        null,
+        294,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        4510,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.3,
+      "aQ": [
+        null,
+        null,
+        86,
+        null,
+        79,
+        null,
+        289,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.4,
+      "aQ": [
+        null,
+        null,
+        90,
+        null,
+        80,
+        null,
+        290,
+        null
+      ],
+      "dQ": [
+        null,
+        675,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.5,
+      "aQ": [
+        null,
+        null,
+        103,
+        null,
+        79,
+        null,
+        292,
+        null
+      ],
+      "dQ": [
+        null,
+        638,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.6,
+      "aQ": [
+        null,
+        null,
+        104,
+        null,
+        82,
+        null,
+        293,
+        null
+      ],
+      "dQ": [
+        null,
+        709,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.7,
+      "aQ": [
+        null,
+        null,
+        85,
+        null,
+        83,
+        null,
+        295,
+        null
+      ],
+      "dQ": [
+        null,
+        941,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.8,
+      "aQ": [
+        null,
+        null,
+        89,
+        null,
+        82,
+        null,
+        297,
+        null
+      ],
+      "dQ": [
+        null,
+        874,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 13.9,
+      "aQ": [
+        null,
+        null,
+        107,
+        null,
+        83,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        864,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 14,
+      "aQ": [
+        null,
+        null,
+        108,
+        null,
+        84,
+        null,
+        298,
+        null
+      ],
+      "dQ": [
+        null,
+        861,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 14.1,
+      "aQ": [
+        null,
+        null,
+        130,
+        null,
+        84,
+        null,
+        297,
+        null
+      ],
+      "dQ": [
+        null,
+        784,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 14.2,
+      "aQ": [
+        null,
+        null,
+        105,
+        null,
+        85,
+        null,
+        297,
+        null
+      ],
+      "dQ": [
+        null,
+        753,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 14.3,
+      "aQ": [
+        null,
+        null,
+        191,
+        null,
+        90,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        1636,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 14.4,
+      "aQ": [
+        null,
+        null,
+        151,
+        null,
+        91,
+        null,
+        306,
+        null
+      ],
+      "dQ": [
+        null,
+        667,
+        null,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 14.5,
+      "aQ": [
+        null,
+        null,
+        204,
+        null,
+        93,
+        null,
+        307,
+        null
+      ],
+      "dQ": [
+        null,
+        573,
+        null,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 14.6,
+      "aQ": [
+        null,
+        null,
+        139,
+        null,
+        95,
+        null,
+        309,
+        null
+      ],
+      "dQ": [
+        null,
+        1102,
+        null,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 14.7,
+      "aQ": [
+        null,
+        null,
+        137,
+        null,
+        94,
+        null,
+        308,
+        null
+      ],
+      "dQ": [
+        null,
+        960,
+        null,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 14.8,
+      "aQ": [
+        null,
+        null,
+        97,
+        null,
+        97,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        904,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 14.9,
+      "aQ": [
+        null,
+        null,
+        85,
+        null,
+        95,
+        null,
+        309,
+        null
+      ],
+      "dQ": [
+        null,
+        1012,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15,
+      "aQ": [
+        null,
+        null,
+        93,
+        null,
+        94,
+        null,
+        309,
+        null
+      ],
+      "dQ": [
+        null,
+        752,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.1,
+      "aQ": [
+        null,
+        null,
+        104,
+        null,
+        96,
+        106,
+        307,
+        312
+      ],
+      "dQ": [
+        null,
+        652,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.2,
+      "aQ": [
+        null,
+        null,
+        95,
+        null,
+        94,
+        null,
+        305,
+        null
+      ],
+      "dQ": [
+        null,
+        776,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.3,
+      "aQ": [
+        null,
+        null,
+        218,
+        null,
+        99,
+        106,
+        312,
+        312
+      ],
+      "dQ": [
+        null,
+        498,
+        null,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 15.4,
+      "aQ": [
+        null,
+        null,
+        263,
+        null,
+        98,
+        null,
+        314,
+        null
+      ],
+      "dQ": [
+        null,
+        804,
+        null,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 15.5,
+      "aQ": [
+        null,
+        null,
+        139,
+        null,
+        95,
+        null,
+        312,
+        null
+      ],
+      "dQ": [
+        null,
+        524,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.6,
+      "aQ": [
+        null,
+        null,
+        217,
+        null,
+        101,
+        null,
+        313,
+        null
+      ],
+      "dQ": [
+        null,
+        586,
+        null,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 15.7,
+      "aQ": [
+        null,
+        null,
+        82,
+        null,
+        98,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        757,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.8,
+      "aQ": [
+        null,
+        null,
+        90,
+        null,
+        97,
+        null,
+        314,
+        null
+      ],
+      "dQ": [
+        null,
+        772,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 15.9,
+      "aQ": [
+        null,
+        null,
+        205,
+        null,
+        100,
+        null,
+        311,
+        null
+      ],
+      "dQ": [
+        null,
+        301,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 16,
+      "aQ": [
+        null,
+        null,
+        119,
+        null,
+        104,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        506,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 16.1,
+      "aQ": [
+        null,
+        null,
+        181,
+        null,
+        110,
+        null,
+        304,
+        null
+      ],
+      "dQ": [
+        null,
+        323,
+        null,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 16.2,
+      "aQ": [
+        null,
+        null,
+        117,
+        null,
+        100,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        390,
+        null,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 16.3,
+      "aQ": [
+        249,
+        null,
+        174,
+        null,
+        104,
+        null,
+        314,
+        null
+      ],
+      "dQ": [
+        null,
+        314,
+        4782,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 16.4,
+      "aQ": [
+        52,
+        null,
+        169,
+        null,
+        106,
+        null,
+        306,
+        null
+      ],
+      "dQ": [
+        null,
+        781,
+        7898,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 16.5,
+      "aQ": [
+        264,
+        null,
+        64,
+        null,
+        106,
+        null,
+        307,
+        null
+      ],
+      "dQ": [
+        null,
+        712,
+        3537,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 16.6,
+      "aQ": [
+        null,
+        null,
+        50,
+        null,
+        105,
+        null,
+        308,
+        null
+      ],
+      "dQ": [
+        null,
+        784,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 16.7,
+      "aQ": [
+        null,
+        null,
+        69,
+        null,
+        108,
+        null,
+        307,
+        null
+      ],
+      "dQ": [
+        null,
+        479,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 16.8,
+      "aQ": [
+        null,
+        null,
+        118,
+        null,
+        106,
+        null,
+        306,
+        null
+      ],
+      "dQ": [
+        null,
+        524,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 16.9,
+      "aQ": [
+        null,
+        null,
+        95,
+        null,
+        107,
+        null,
+        303,
+        null
+      ],
+      "dQ": [
+        null,
+        631,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 17,
+      "aQ": [
+        null,
+        null,
+        80,
+        null,
+        106,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 17.1,
+      "aQ": [
+        null,
+        null,
+        197,
+        null,
+        108,
+        null,
+        304,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 17.2,
+      "aQ": [
+        null,
+        null,
+        143,
+        null,
+        103,
+        null,
+        313,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 17.3,
+      "aQ": [
+        null,
+        null,
+        105,
+        null,
+        103,
+        null,
+        314,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 71
+    },
+    {
+      "t": 17.4,
+      "aQ": [
+        null,
+        null,
+        78,
+        null,
+        101,
+        null,
+        314,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 71
+    },
+    {
+      "t": 17.5,
+      "aQ": [
+        null,
+        null,
+        175,
+        null,
+        97,
+        null,
+        313,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 70
+    },
+    {
+      "t": 17.6,
+      "aQ": [
+        null,
+        null,
+        170,
+        null,
+        97,
+        null,
+        312,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 70
+    },
+    {
+      "t": 17.7,
+      "aQ": [
+        null,
+        null,
+        44,
+        null,
+        96,
+        null,
+        309,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 17.8,
+      "aQ": [
+        null,
+        null,
+        40,
+        null,
+        94,
+        null,
+        304,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 17.9,
+      "aQ": [
+        null,
+        null,
+        206,
+        null,
+        93,
+        null,
+        310,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 18,
+      "aQ": [
+        null,
+        null,
+        198,
+        null,
+        94,
+        null,
+        299,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 18.1,
+      "aQ": [
+        null,
+        null,
+        86,
+        null,
+        94,
+        null,
+        301,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 18.2,
+      "aQ": [
+        null,
+        null,
+        79,
+        null,
+        92,
+        null,
+        296,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.3,
+      "aQ": [
+        null,
+        null,
+        82,
+        null,
+        90,
+        null,
+        293,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.4,
+      "aQ": [
+        null,
+        null,
+        84,
+        null,
+        89,
+        null,
+        288,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.5,
+      "aQ": [
+        null,
+        null,
+        122,
+        null,
+        87,
+        null,
+        293,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.6,
+      "aQ": [
+        null,
+        null,
+        150,
+        null,
+        86,
+        null,
+        292,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.7,
+      "aQ": [
+        null,
+        null,
+        181,
+        null,
+        87,
+        null,
+        292,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 68
+    },
+    {
+      "t": 18.8,
+      "aQ": [
+        null,
+        null,
+        162,
+        null,
+        86,
+        null,
+        290,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 18.9,
+      "aQ": [
+        null,
+        null,
+        158,
+        null,
+        84,
+        null,
+        282,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 19,
+      "aQ": [
+        null,
+        null,
+        115,
+        null,
+        81,
+        null,
+        281,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 19.1,
+      "aQ": [
+        null,
+        null,
+        94,
+        null,
+        82,
+        null,
+        281,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 19.2,
+      "aQ": [
+        null,
+        null,
+        119,
+        null,
+        80,
+        null,
+        278,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 19.3,
+      "aQ": [
+        null,
+        null,
+        93,
+        null,
+        76,
+        null,
+        276,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 69
+    },
+    {
+      "t": 19.4,
+      "aQ": [
+        null,
+        null,
+        84,
+        null,
+        72,
+        null,
+        276,
+        null
+      ],
+      "dQ": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "visQ": 71
+    },
+    {
+      "t": 19.5,
+      "aQ": [
+        null,
+        null,
+        86,
+        null,
+        71,
+        null,
+        273,
+        null
+      ],
+      "dQ": [
+        null,
+        529,
+        null,
+        null
+      ],
+      "visQ": 72
+    },
+    {
+      "t": 19.6,
+      "aQ": [
+        null,
+        null,
+        83,
+        null,
+        69,
+        null,
+        270,
+        null
+      ],
+      "dQ": [
+        null,
+        478,
+        null,
+        null
+      ],
+      "visQ": 73
+    },
+    {
+      "t": 19.7,
+      "aQ": [
+        307,
+        null,
+        83,
+        null,
+        69,
+        null,
+        269,
+        null
+      ],
+      "dQ": [
+        null,
+        497,
+        2305,
+        null
+      ],
+      "visQ": 74
+    },
+    {
+      "t": 19.8,
+      "aQ": [
+        308,
+        null,
+        81,
+        null,
+        67,
+        null,
+        265,
+        null
+      ],
+      "dQ": [
+        null,
+        592,
+        2236,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 19.9,
+      "aQ": [
+        303,
+        null,
+        82,
+        null,
+        66,
+        null,
+        262,
+        null
+      ],
+      "dQ": [
+        null,
+        657,
+        2275,
+        null
+      ],
+      "visQ": 75
+    },
+    {
+      "t": 20,
+      "aQ": [
+        305,
+        null,
+        81,
+        null,
+        65,
+        null,
+        258,
+        null
+      ],
+      "dQ": [
+        null,
+        744,
+        2291,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 20.1,
+      "aQ": [
+        307,
+        null,
+        82,
+        null,
+        64,
+        null,
+        257,
+        null
+      ],
+      "dQ": [
+        null,
+        672,
+        2348,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 20.2,
+      "aQ": [
+        303,
+        null,
+        79,
+        null,
+        62,
+        null,
+        254,
+        null
+      ],
+      "dQ": [
+        null,
+        615,
+        2006,
+        null
+      ],
+      "visQ": 76
+    },
+    {
+      "t": 20.3,
+      "aQ": [
+        301,
+        null,
+        80,
+        null,
+        61,
+        null,
+        251,
+        null
+      ],
+      "dQ": [
+        null,
+        647,
+        2053,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 20.4,
+      "aQ": [
+        308,
+        null,
+        79,
+        null,
+        59,
+        null,
+        250,
+        null
+      ],
+      "dQ": [
+        null,
+        608,
+        2089,
+        null
+      ],
+      "visQ": 77
+    },
+    {
+      "t": 20.5,
+      "aQ": [
+        307,
+        null,
+        79,
+        null,
+        59,
+        null,
+        246,
+        null
+      ],
+      "dQ": [
+        null,
+        612,
+        2095,
+        null
+      ],
+      "visQ": 77
+    }
+  ]
+}
