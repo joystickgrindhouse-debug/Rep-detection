@@ -287,6 +287,32 @@ function updateFeedbackUI() {
     
     STATE.isGoodForm = !isBadForm;
 
+    // Draw skeleton if landmarks are available
+    if (STATE.landmarks) {
+        canvasCtx.save();
+        canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+        
+        // Use mirroring for front camera
+        canvasCtx.translate(canvasElement.width, 0);
+        canvasCtx.scale(-1, 1);
+        
+        // Draw standard skeleton connections
+        drawConnectors(canvasCtx, STATE.landmarks, [
+            [11, 12], [11, 13], [13, 15], [12, 14], [14, 16], // Upper body
+            [11, 23], [12, 24], [23, 24], // Torso
+            [23, 25], [25, 27], [24, 26], [26, 28]  // Lower body
+        ], { color: STATE.isGoodForm ? '#00FF88' : '#FF4444', lineWidth: 4 });
+
+        // Draw landmarks with color based on form
+        drawLandmarks(canvasCtx, STATE.landmarks, {
+            color: STATE.isGoodForm ? '#00FF88' : '#FF4444',
+            lineWidth: 2,
+            radius: 3
+        });
+        
+        canvasCtx.restore();
+    }
+
     const colorMap = {
         'UP': '#00ff88', 'STAND': '#00ff88', 'OPEN': '#00ff88', 'HOLD': '#00ff88',
         'DOWN': '#ff4444', 'PLANK': '#ff4444', 'CLOSED': '#ff4444'
@@ -330,6 +356,16 @@ class PushUp extends BaseExercise {
 
         if (angle === -1) return { feedback: 'Position yourself sideways to the camera' };
         
+        // Form correction logic
+        const shoulder = this.get(landmarks, 11);
+        const hip = this.get(landmarks, 23);
+        const ankle = this.get(landmarks, 27);
+        const hipAngle = calculateAngle(shoulder, hip, ankle);
+        
+        if (hipAngle !== -1 && hipAngle < 150) {
+            return { state: this.state, feedback: 'Keep your back straight' };
+        }
+
         if (angle > 140) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
@@ -365,6 +401,17 @@ class Squats extends BaseExercise {
         }
 
         if (angle === -1) return { feedback: 'Make sure your legs are visible' };
+
+        // Form correction: Chest up
+        const shoulder = this.get(landmarks, 11);
+        const hip = this.get(landmarks, 23);
+        const knee = this.get(landmarks, 25);
+        const torsoAngle = calculateAngle(shoulder, hip, knee);
+
+        if (torsoAngle !== -1 && torsoAngle < 70) {
+            return { state: this.state, feedback: 'Keep your chest up' };
+        }
+
         if (angle > 145) {
             if (this.state === 'DOWN') {
                 this.state = 'UP';
