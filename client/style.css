@@ -98,6 +98,20 @@ body {
     padding-bottom: 20px;
 }
 
+#user-info {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+#user-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+    background: rgba(0,0,0,0.3);
+}
+
 .selector-container select {
     background: var(--card-bg);
     color: var(--text-primary);

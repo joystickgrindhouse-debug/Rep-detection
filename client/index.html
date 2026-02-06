@@ -24,16 +24,19 @@
         <!-- UI Overlay -->
         <div class="ui-layer">
             <header class="top-bar">
-                <div id="solo-mode-stats" class="session-stats hidden">
-                    <div class="stat-item">
-                        <span class="stat-label">TOTAL REPS</span>
-                        <span id="total-reps" class="stat-value">0</span>
+                <div id="user-info" class="flex items-center gap-3">
+                    <img id="user-avatar" src="" class="w-10 h-10 rounded-full hidden border-2 border-white/20 shadow-lg" alt="Hub Avatar">
+                    <div id="solo-mode-stats" class="session-stats hidden">
+                        <div class="stat-item">
+                            <span class="stat-label">TOTAL REPS</span>
+                            <span id="total-reps" class="stat-value">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-label">TICKETS</span>
+                            <span id="tickets-earned" class="stat-value">0</span>
+                        </div>
+                        <div id="session-timer" class="stat-value">00:00</div>
                     </div>
-                    <div class="stat-item">
-                        <span class="stat-label">TICKETS</span>
-                        <span id="tickets-earned" class="stat-value">0</span>
-                    </div>
-                    <div id="session-timer" class="stat-value">00:00</div>
                 </div>
                 <div class="status-badge" id="camera-status">📷 OFF</div>
             </header>

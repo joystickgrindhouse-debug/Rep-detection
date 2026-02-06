@@ -2,10 +2,47 @@ import { Pose } from '@mediapipe/pose';
 import { Camera } from '@mediapipe/camera_utils';
 import { drawConnectors, drawLandmarks } from '@mediapipe/drawing_utils';
 
+// Hub Integration - Auth & Stats sharing
+window.addEventListener('message', async (event) => {
+    // Only trust Rivalis Hub domain
+    if (event.origin !== 'https://rivalishub.vercel.app' && event.origin !== 'http://localhost:3000') return;
+
+    const { type, data } = event.data;
+    console.log('Hub message received:', type);
+
+    if (type === 'HUB_USER_AUTH') {
+        const { user } = data;
+        // Shared hub user data
+        STATE.hubUser = user;
+        // Update UI with hub avatar
+        const avatarImg = document.getElementById('user-avatar');
+        if (avatarImg && user.avatarUrl) {
+            avatarImg.src = user.avatarUrl;
+            avatarImg.classList.remove('hidden');
+        }
+        showToast(`Connected as ${user.displayName || 'Hub User'}`);
+    }
+});
+
+// Function to send stats back to Hub
+function sendStatsToHub() {
+    if (window.parent !== window) {
+        window.parent.postMessage({
+            type: 'APP_STATS_UPDATE',
+            data: {
+                totalReps: STATE.totalReps,
+                totalTickets: STATE.totalTickets,
+                sessionDuration: Math.floor((Date.now() - STATE.sessionStartTime) / 1000),
+                lastExercise: STATE.lastExercise
+            }
+        }, 'https://rivalishub.vercel.app');
+    }
+}
+
 const CONFIG = {
     minDetectionConfidence: 0.5,
     minTrackingConfidence: 0.5,
-    modelComplexity: 0, 
+    modelComplexity: 0, // 0 is fastest for mobile
     visibilityThreshold: 0.2,
 };
 
@@ -230,6 +267,21 @@ function updateSoloUI() {
             STATE.totalTickets += Math.floor(STATE.reps);
         }
         
+        // Share updated stats with Hub after completing a card
+        sendStatsToHub();
+        
+        // Final session summary to Hub
+        if (window.parent !== window) {
+            window.parent.postMessage({
+                type: 'SESSION_COMPLETE',
+                data: {
+                    totalReps: STATE.totalReps,
+                    totalTickets: STATE.totalTickets,
+                    duration: Math.floor((Date.now() - STATE.sessionStartTime) / 1000)
+                }
+            }, 'https://rivalishub.vercel.app');
+        }
+
         setTimeout(drawNewCard, 1500);
     }
 }
@@ -686,9 +738,14 @@ const camera = new Camera(videoElement, {
             await pose.send({image: videoElement});
         }
     },
-    width: 640,
-    height: 480
+    // Faster camera initialization
+    width: 480,
+    height: 360,
+    facingMode: 'user'
 });
+
+// Warm up Pose detection immediately
+pose.initialize();
 
 startBtn.addEventListener('click', () => {
     if (!STATE.isCameraRunning) startCamera();
